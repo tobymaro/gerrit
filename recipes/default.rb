@@ -18,18 +18,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-user "gerrit2" do
-  uid "2345"
-  gid "gerrit2"
-  home "/home/gerrit2"
+####################################
+# User setup
+####################################
+
+group node['gerrit']['group']
+
+user node['gerrit']['user'] do
+  gid node['gerrit']['group']
+  home node['gerrit']['home']
   comment "Gerrit system user"
-  action :manage
+  shell "/bin/bash"
 end
 
-remote_file "/home/gerrit2/gerrit.war" do
-  owner "gerrit2"
-  source "http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war"
+directory node['gerrit']['home'] do
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  recursive true
 end
+
+
+####################################
+# MySQL
+####################################
 
 require_recipe "build-essential"
 require_recipe "mysql"
@@ -42,26 +53,27 @@ mysql_connection_info = {
     :password => node['mysql']['server_root_password']
   }
 
-mysql_database "reviewdb" do
+mysql_database node['gerrit']['database']['name'] do
   connection mysql_connection_info
   action :create
 end
 
-mysql_database "changing the charset of reviewdb" do
+mysql_database "changing the charset of database" do
   connection mysql_connection_info
+  database_name node['gerrit']['database']['name']
   action :query
-  sql "ALTER DATABASE reviewdb charset=latin1"
+  sql "ALTER DATABASE #{node['gerrit']['database']['name']} charset=latin1"
 end
 
-mysql_database_user "gerrit2" do
+mysql_database_user node['gerrit']['database']['username'] do
   connection mysql_connection_info
-  password node['mysql']['server_root_password']
+  password node['gerrit']['database']['password']
   action :create
 end
 
-mysql_database_user "gerrit2" do
+mysql_database_user node['gerrit']['database']['username'] do
   connection mysql_connection_info
-  database_name "reviewdb"
+  database_name node['gerrit']['database']['name']
   privileges [
     :all
   ]
@@ -74,37 +86,69 @@ mysql_database "flushing mysql privileges" do
   sql "FLUSH PRIVILEGES"
 end
 
+
+####################################
+# Deploy
+####################################
+
 require_recipe "java"
 require_recipe "git"
 
+remote_file "#{Chef::Config[:file_cache_path]}/gerrit.war" do
+  owner node['gerrit']['user']
+  source "http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war"
+  checksum node['gerrit']['checksum'][node['gerrit']['version']]
+end
+
+directory node['gerrit']['install_dir'] do
+  owner node['gerrit']['user']
+  owner node['gerrit']['group']
+  mode "0700"
+  recursive true 
+end
+
+directory "#{node['gerrit']['install_dir']}/etc" do
+  owner node['gerrit']['user']
+  owner node['gerrit']['group']
+  mode "0700"
+end
+
+template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
+  source "gerrit.config"
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  mode 0600
+end
+
+template "#{node['gerrit']['install_dir']}/etc/secure.config" do
+  source "secure.config"
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  mode 0600
+end
+
 bash "Initializing Gerrit site" do
-  user "gerrit2"
-  group "gerrit2"
-  cwd "/home/gerrit2"
+  user node['gerrit']['user']
+  group node['gerrit']['group']
+  cwd Chef::Config[:file_cache_path]
   code <<-EOH
-  java -jar gerrit.war init -d review_site
+  java -jar gerrit.war init --batch --no-auto-start -d #{node['gerrit']['install_dir']}
   EOH
 end
 
-#template "" do
-#  source
-#end
-
-bash "Starting gerrit daemon" do
-  user "gerrit2"
-  group "gerrit2"
-  code <<-EOH
-  ./home/gerrit2/review_site/bin/gerrit.sh start
-  EOH
+template "/etc/default/gerritcodereview" do
+  source "default.gerritcodereview.erb"
 end
 
-link "/etc/init.d/gerrit.sh" do
-  to "/home/gerrit2/review_site/bin/gerrit.sh"
+link "/etc/init.d/gerrit" do
+  to "#{node['gerrit']['install_dir']}/bin/gerrit.sh"
 end
 
 link "/etc/rc3.d/S90gerrit" do
-  to "../init.d/gerrit.sh"
+  to "../init.d/gerrit"
 end
 
-#service "gerrit" do
-#end
+service "gerrit" do
+  supports :status => false, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
