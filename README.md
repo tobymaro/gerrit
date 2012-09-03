@@ -28,7 +28,8 @@ Attributes
 
 These attributes are set by the cookbook by default.
 
-Installation:
+Deployment
+----------
 
 * `node['gerrit']['flavor']` - Installation type, either `war` or `source`. `war` downloads the `.war` file from `download_url`. `source` checks out the git repository `repository` and builds it using Maven. Please note that the `source` flavor is absolutely *not* recommended for production use. Building Gerrit will cause severe load on your server!
 * `node['gerrit']['version']` - Gerrit version to deploy.
@@ -36,14 +37,16 @@ Installation:
 * `node['gerrit']['repository']` - Git repository containing the Gerrit source code. Defaults to `https://gerrit.googlesource.com/gerrit`.
 * `node['gerrit']['reference']` - Git revision or branch name to checkout.
 
-User and path setup:
+User and path setup
+-------------------
 
 * `node['gerrit']['user']` - User, under which Gerrit runs ([container.user](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#container.user)). Defaults to `gerrit`.
 * `node['gerrit']['group']` -  Group name of the `gerrit` user. Defaults to `gerrit`.
 * `node['gerrit']['home']` - Home directory of the `gerrit` user. Defaults to `/var/gerrit`.
 * `node['gerrit']['install_dir']` - Directory, where Gerrit is installed into. Defaults to `node['gerrit']['home']/review`.
 
-HTTP and friends:
+HTTP and friends
+----------------
 
 * `node['gerrit']['hostname']` - The default hostname for Gerrit to be accessed through. Defaults to `fqdn`.
 * `node['gerrit']['canonicalWebUrl']` - The default URL for Gerrit to be accessed through. Typically this would be set to "http://review.example.com/" or "http://example.com/gerrit/" so Gerrit can output links that point back to itself. ([gerrit.canonicalWebUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#gerrit.canonicalWebUrl)). Defaults to `http://#{node['fqdn']}/`.
@@ -51,11 +54,13 @@ connections on ([sshd.listenAddress](http://gerrit-documentation.googlecode.com/
 * `node['gerrit']['proxy']` - Enable Apache2 reverse proxy in front of Gerrit. Defaults to `true`, which makes Gerrit available on port 80.
 * `node['gerrit']['ssl']` - Enable SSL for the reverse proxy. Uses snakeoil certificates. Defaults to `false`.
 
-SSHD:
+SSHD
+----
 
 * `node['gerrit']['port']` - Specifies the local addresses the internal SSHD should listen for 
  
-Database configuration:
+Database configuration
+----------------------
 
 * `node['gerrit']['database']['type']` - Type of database server to connect to ([database.type](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.type)). Defaults to `MYSQL`.
 * `node['gerrit']['database']['hostname']` - Hostname of the database server ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.hostname)). Defaults to `localhost`.
@@ -64,7 +69,8 @@ Database configuration:
 * `node['gerrit']['database']['username']` - Username to connect to the database server as ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.username)). Defaults to `gerrit`.
 * `node['gerrit']['database']['password']` - Password to authenticate to the database server with ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.password)). Defaults to `gerrit`.
 
-Theme:
+Theme
+-----
 
 * `node['gerrit']['theme']['compile_files]` - Hash of files deployed to `etc/`. Possible file names are `GerritSite(Header|Footer).html` and `GerritSite.css`. Changing these files results in a Gerrit restart. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-headerfooter.html#_html_header_footer).
 * `node['gerrit']['static_files']` - Hash of files deployed to `static/`. Files, which can be used in a custom theme and are available through `#{node['gerrit']['canonicalWebUrl']}/static/`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-headerfooter.html#_static_images).
