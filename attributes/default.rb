@@ -18,32 +18,31 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-default['gerrit']['version'] = "full-2.5-rc0"
-default['gerrit']['checksum'] = {
-  '2.2.1' => "8af3c50c8b",
-  'full-2.5-rc0' => "9c9d3ed1f87c"
-}
+default['gerrit']['flavor'] = "war"
+
+default['gerrit']['version'] = "2.4.2"
+
+default['gerrit']['war']['download_url'] = "http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war"
+
+default['gerrit']['source']['repository'] = "https://gerrit.googlesource.com/gerrit"
 
 default['gerrit']['user'] = "gerrit"
 default['gerrit']['group'] = "gerrit"
 default['gerrit']['home'] = "/var/gerrit"
-
 default['gerrit']['install_dir'] = "#{node['gerrit']['home']}/review"
 
 default['gerrit']['hostname'] = node['fqdn']
+default['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
 default['gerrit']['port'] = "29418"
-default['gerrit']['frontend_url'] = "http://#{node['fqdn']}:8080/"
+default['gerrit']['proxy'] = true
+default['gerrit']['ssl'] = false
 
+default['gerrit']['database']['type'] = "MYSQL"
 default['gerrit']['database']['host'] = "localhost"
 default['gerrit']['database']['name'] = "gerrit"
 default['gerrit']['database']['username'] = "gerrit"
 default['gerrit']['database']['password'] = "fooooooo"
 
-if platform?("debian")
-  if node['lsb']['codename'] =~ /wheezy/
-    # default['java']['jdk_version'] = "7"
-    default['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk-amd64"
-  else
-    default['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk"
-  end
-end
+default['gerrit']['theme']['compile_files'] = []
+	
+default['gerrit']['theme']['static_files'] = []

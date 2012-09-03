@@ -2,7 +2,7 @@
 # Cookbook Name:: gerrit
 # Recipe:: default
 #
-# Copyright 2011, Myplanet Digital
+# Copyright 2012, Steffen Gebert / TYPO3 Association
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,62 +29,114 @@ user node['gerrit']['user'] do
   home node['gerrit']['home']
   comment "Gerrit system user"
   shell "/bin/bash"
+  system true
 end
 
-directory node['gerrit']['home'] do
+
+####################################
+# Directories & Files
+####################################
+
+dirs = [
+  node['gerrit']['home'],
+  node['gerrit']['home'] + "/war",
+  node['gerrit']['install_dir'],
+  node['gerrit']['install_dir'] + "/etc",
+  node['gerrit']['install_dir'] + "/lib", 
+  node['gerrit']['install_dir'] + "/static"
+]
+
+dirs.each do |dir|
+  directory dir do
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+    recursive true
+  end
+end
+
+
+%w{
+  gerrit.config
+  replication.config
+}.each do |file|
+  template "#{node['gerrit']['install_dir']}/etc/#{file}" do
+    source "gerrit/#{file}"
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+    mode 0644
+    notifies :restart, "service[gerrit]"
+  end
+end
+
+template "#{node['gerrit']['install_dir']}/etc/secure.config" do
+  source "gerrit/secure.config"
   owner node['gerrit']['user']
   group node['gerrit']['group']
-  recursive true
+  mode 0600
+  notifies :restart, "service[gerrit]"
 end
 
+template "/etc/default/gerritcodereview" do
+  source "system/default.gerritcodereview.erb"
+  mode 0644
+  notifies :restart, "service[gerrit]"
+end
+
+node['gerrit']['theme']['compile_files'].each do |file|
+  cookbook_file "#{node['gerrit']['install_dir']}/etc/#{file}" do
+    source "gerrit/#{file}"
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+    mode 0644
+    notifies :restart, "service[gerrit]"
+  end
+end
+
+node['gerrit']['theme']['static_files'].each do |file|
+  cookbook_file node['gerrit']['install_dir'] + "/static/" + file do
+    source "gerrit/static/" + file
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+  end
+end
 
 ####################################
 # MySQL
 ####################################
 
-require_recipe "build-essential"
-require_recipe "mysql"
-require_recipe "mysql::server"
-require_recipe "database"
-
-mysql_connection_info = {
-    :host =>  "localhost",
-    :username => "root",
-    :password => node['mysql']['server_root_password']
-  }
-
-mysql_database node['gerrit']['database']['name'] do
-  connection mysql_connection_info
-  action :create
+if node['gerrit']['database']['type'] == "MYSQL"
+  require_recipe "gerrit::mysql"
 end
 
-mysql_database "changing the charset of database" do
-  connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
-  action :query
-  sql "ALTER DATABASE #{node['gerrit']['database']['name']} charset=latin1"
+
+
+####################################
+# Proxy
+####################################
+
+if node['gerrit']['proxy']
+  require_recipe "gerrit::proxy"
 end
 
-mysql_database_user node['gerrit']['database']['username'] do
-  connection mysql_connection_info
-  password node['gerrit']['database']['password']
-  action :create
+
+####################################
+# Java
+####################################
+
+
+if platform?("debian") && !File.directory?(node['java']['java_home'])
+  Chef::Log.warn "java_home doesn't exist. Adjusting it"
+   
+  if node['lsb']['codename'] == "wheezy"
+    Chef::Log.info "Debian Wheezy, going for Java 7"
+    node['java']['jdk_version'] = "7"
+    node['java']['java_home'] = "/usr/lib/jvm/java-7-openjdk-amd64"
+  else
+    Chef::Log.info "Going for Java 6"
+    node['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk"
+  end
 end
 
-mysql_database_user node['gerrit']['database']['username'] do
-  connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
-  privileges [
-    :all
-  ]
-  action :grant
-end
-
-mysql_database "flushing mysql privileges" do
-  connection mysql_connection_info
-  action :query
-  sql "FLUSH PRIVILEGES"
-end
 
 
 ####################################
@@ -94,50 +146,42 @@ end
 require_recipe "java"
 require_recipe "git"
 
-remote_file "#{Chef::Config[:file_cache_path]}/gerrit.war" do
-  owner node['gerrit']['user']
-  source "http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war"
-  checksum node['gerrit']['checksum'][node['gerrit']['version']]
+#directory "#{node['gerrit']['home']}/war" do
+#  owner node['gerrit']['user']
+#  group node['gerrit']['group']
+#end
+
+if node['gerrit']['flavor'] == "war"
+  filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
+
+  remote_file filename do
+    owner node['gerrit']['user']
+    source node['gerrit']['war']['download_url']
+    # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
+    notifies :run, "bash[gerrit-init]", :immediately
+    action :create_if_missing
+  end
+else
+  require_recipe "gerrit::source"
+  
+  filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}-#{node['gerrit']['source']['reference']}.war"
+
+  bash "copy war" do
+    Chef::Log.info "Created " + filename
+    user node['gerrit']['user']
+    code "cp #{node['gerrit']['home']}/src/git/gerrit-war/target/gerrit-*.war #{filename}"
+    notifies :run, "bash[gerrit-init]", :immediately
+    creates filename
+  end
 end
 
-directory node['gerrit']['install_dir'] do
-  owner node['gerrit']['user']
-  owner node['gerrit']['group']
-  mode "0700"
-  recursive true 
-end
-
-directory "#{node['gerrit']['install_dir']}/etc" do
-  owner node['gerrit']['user']
-  owner node['gerrit']['group']
-  mode "0700"
-end
-
-template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
-  source "gerrit.config"
-  owner node['gerrit']['user']
-  group node['gerrit']['group']
-  mode 0600
-end
-
-template "#{node['gerrit']['install_dir']}/etc/secure.config" do
-  source "secure.config"
-  owner node['gerrit']['user']
-  group node['gerrit']['group']
-  mode 0600
-end
-
-bash "Initializing Gerrit site" do
+bash "gerrit-init" do
   user node['gerrit']['user']
   group node['gerrit']['group']
-  cwd Chef::Config[:file_cache_path]
-  code <<-EOH
-  java -jar gerrit.war init --batch --no-auto-start -d #{node['gerrit']['install_dir']}
-  EOH
-end
-
-template "/etc/default/gerritcodereview" do
-  source "default.gerritcodereview.erb"
+  cwd "#{node['gerrit']['home']}/war"
+  code "java -jar #{filename} init --batch --no-auto-start -d #{node['gerrit']['install_dir']}"
+  action :nothing
+  notifies :restart, "service[gerrit]"
 end
 
 link "/etc/init.d/gerrit" do
@@ -152,3 +196,29 @@ service "gerrit" do
   supports :status => false, :restart => true, :reload => true
   action [ :enable, :start ]
 end
+
+
+
+####################################
+# Cron-Job
+####################################
+
+directory "#{node['gerrit']['home']}/cron" do
+  owner node['gerrit']['user']
+end
+
+template "#{node['gerrit']['home']}/cron/repack-repositories.sh" do
+  source "scripts/repack-repositories.sh"
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  mode 0744
+end
+
+cron "repack repositories" do
+  hour "2"
+  minute "0"
+  weekday "0"
+  command "#{node['gerrit']['home']}/cron/repack-repositories.sh"
+  user node['gerrit']['user']
+end
+

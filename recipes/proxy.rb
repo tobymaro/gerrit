@@ -26,8 +26,13 @@ web_app node['gerrit']['hostname'] do
   server_name node['gerrit']['hostname']
   server_aliases []
   docroot "/var/www"
+  template "apache/web_app.conf.erb"
 end
 
 apache_site "default" do
   enable false
+end
+
+if node['gerrit']['ssl']
+  include_recipe "apache2::mod_ssl"
 end
