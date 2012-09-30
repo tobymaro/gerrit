@@ -46,3 +46,5 @@ default['gerrit']['database']['password'] = "gerrit"
 default['gerrit']['theme']['compile_files'] = []
 	
 default['gerrit']['theme']['static_files'] = []
+default['gerrit']['peer_keys']['public'] = ""
+default['gerrit']['peer_keys']['private'] = ""
