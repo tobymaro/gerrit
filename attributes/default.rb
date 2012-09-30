@@ -41,7 +41,7 @@ default['gerrit']['database']['type'] = "MYSQL"
 default['gerrit']['database']['host'] = "localhost"
 default['gerrit']['database']['name'] = "gerrit"
 default['gerrit']['database']['username'] = "gerrit"
-default['gerrit']['database']['password'] = "fooooooo"
+default['gerrit']['database']['password'] = "gerrit"
 
 default['gerrit']['theme']['compile_files'] = []
 	
