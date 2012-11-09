@@ -88,7 +88,6 @@ node['gerrit']['theme']['compile_files'].each do |file|
     owner node['gerrit']['user']
     group node['gerrit']['group']
     mode 0644
-    notifies :restart, "service[gerrit]"
   end
 end
 
