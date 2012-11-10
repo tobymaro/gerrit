@@ -35,7 +35,13 @@ default['gerrit']['hostname'] = node['fqdn']
 default['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
 default['gerrit']['port'] = "29418"
 default['gerrit']['proxy'] = true
+
+# if this is set, an entry in the ssl_certificates data bag matching the given name must exist
+# this uses the ssl-certificates cookbook
+# http://github.com/binarymarbles/chef-ssl-certificates
 default['gerrit']['ssl'] = false
+default['gerrit']['ssl_certificate'] = nil
+
 
 default['gerrit']['database']['type'] = "MYSQL"
 default['gerrit']['database']['host'] = "localhost"

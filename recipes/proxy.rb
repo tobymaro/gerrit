@@ -22,17 +22,29 @@ include_recipe "apache2"
 include_recipe "apache2::mod_proxy"
 include_recipe "apache2::mod_proxy_http"
 
-web_app node['gerrit']['hostname'] do
-  server_name node['gerrit']['hostname']
-  server_aliases []
-  docroot "/var/www"
-  template "apache/web_app.conf.erb"
-end
-
 apache_site "default" do
   enable false
 end
 
 if node['gerrit']['ssl']
   include_recipe "apache2::mod_ssl"
+
+  ssl_certfile_path = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  ssl_keyfile_path  = "/etc/ssl/certs/ssl-cert-snakeoil.key"
+
+  # don't use snakeoil CA, if specified otherwise
+  if node['gerrit']['ssl_certificate']
+    ssl_certificate node['gerrit']['ssl_certificate']
+    ssl_certfile_path = node['ssl_certificates']['path'] + "/" + node['gerrit']['ssl_certificate'] + ".crt"
+    ssl_keyfile_path  = node['ssl_certificates']['path'] + "/" + node['gerrit']['ssl_certificate'] + ".key"
+  end
+end
+
+web_app node['gerrit']['hostname'] do
+  server_name node['gerrit']['hostname']
+  server_aliases []
+  docroot "/var/www"
+  template "apache/web_app.conf.erb"
+  ssl_certfile ssl_certfile_path
+  ssl_keyfile ssl_keyfile_path
 end
