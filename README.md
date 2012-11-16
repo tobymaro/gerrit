@@ -99,7 +99,7 @@ Checks out the Git repository configured in `node['gerrit']['repository']` and r
 Usage
 =====
 
-Create a role for the OpenVPN server. See above for attributes that can be entered here.
+Create a role for the Gerrit server. See above for attributes that can be entered here.
 
     % cat roles/gerrit.rb
     name 'gerrit'
