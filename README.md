@@ -22,6 +22,8 @@ Requirements
 * git
 * maven
 * apache2
+* [ssl_certificates](http://github.com/typo3-cookbooks/ssl_certificates)
+* Optional: [git-daemon](http://github.com/typo3-cookbooks/git-daemon)
 
 Attributes
 ==========
@@ -40,7 +42,7 @@ Deployment
 User and path setup
 -------------------
 
-* `node['gerrit']['user']` - User, under which Gerrit runs ([container.user](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#container.user)). Defaults to `gerrit`.
+* `node['gerrit']['user']` - User, under which Gerrit runs ([container.user](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#container.user)). Defaults to `gerrit`.
 * `node['gerrit']['group']` -  Group name of the `gerrit` user. Defaults to `gerrit`.
 * `node['gerrit']['home']` - Home directory of the `gerrit` user. Defaults to `/var/gerrit`.
 * `node['gerrit']['install_dir']` - Directory, where Gerrit is installed into. Defaults to `node['gerrit']['home']/review`.
@@ -49,10 +51,12 @@ HTTP and friends
 ----------------
 
 * `node['gerrit']['hostname']` - The default hostname for Gerrit to be accessed through. Defaults to `fqdn`.
-* `node['gerrit']['canonicalWebUrl']` - The default URL for Gerrit to be accessed through. Typically this would be set to "http://review.example.com/" or "http://example.com/gerrit/" so Gerrit can output links that point back to itself. ([gerrit.canonicalWebUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#gerrit.canonicalWebUrl)). Defaults to `http://#{node['fqdn']}/`.
-connections on ([sshd.listenAddress](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#sshd.listenAddress)).
+* `node['gerrit']['canonicalWebUrl']` - The default URL for Gerrit to be accessed through. Typically this would be set to "http://review.example.com/" or "http://example.com/gerrit/" so Gerrit can output links that point back to itself. ([gerrit.canonicalWebUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#gerrit.canonicalWebUrl)). Defaults to `http://#{node['fqdn']}/`.
+connections on ([sshd.listenAddress](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#sshd.listenAddress)).
+* `node['gerrit']['canonicalGitUrl']` - The URL under which the repositories are available through the Git protocol ([gerrit.canonicalGitUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#gerrit.canonicalGitUrl)). Has to include the protocol (`git://`). As Gerrit does _not_ support the Git protocol, such a server has to be managed through another cookbook, e.g. [git-daemon](http://github.com/typo3-cookbooks/git-daemon).
 * `node['gerrit']['proxy']` - Enable Apache2 reverse proxy in front of Gerrit. Defaults to `true`, which makes Gerrit available on port 80.
-* `node['gerrit']['ssl']` - Enable SSL for the reverse proxy. Uses snakeoil certificates. Defaults to `false`.
+* `node['gerrit']['ssl']` - Enable SSL for the reverse proxy. Defaults to `false`.
+* `node['gerrit']['ssl_certificate']`- Makes use of the [ssl_certificates](http://github.com/typo3-cookbooks/ssl_certificates), to use a certain SSL certificate. An entry in the `ssl_certificates` data bag matching the given name must exist. Defaults to `nil`, which results in snakeoil certificates being used.
 
 SSHD
 ----
@@ -62,25 +66,25 @@ SSHD
 Database configuration
 ----------------------
 
-* `node['gerrit']['database']['type']` - Type of database server to connect to ([database.type](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.type)). Defaults to `MYSQL`.
-* `node['gerrit']['database']['hostname']` - Hostname of the database server ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.hostname)). Defaults to `localhost`.
-* `node['gerrit']['database']['name']` - For `POSTGRESQL` or `MYSQL`, the name of the database on the server. For `H2`, this is the path to the database, and if not absolute is relative to `$site_path ` ([database.database](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.hostname)). Defaults to `gerrit`.
+* `node['gerrit']['database']['type']` - Type of database server to connect to ([database.type](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#database.type)). Defaults to `MYSQL`.
+* `node['gerrit']['database']['hostname']` - Hostname of the database server ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#database.hostname)). Defaults to `localhost`.
+* `node['gerrit']['database']['name']` - For `POSTGRESQL` or `MYSQL`, the name of the database on the server. For `H2`, this is the path to the database, and if not absolute is relative to `$site_path ` ([database.database](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#database.database)). Defaults to `gerrit`.
 
-* `node['gerrit']['database']['username']` - Username to connect to the database server as ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.username)). Defaults to `gerrit`.
-* `node['gerrit']['database']['password']` - Password to authenticate to the database server with ([database.hostname](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-gerrit.html#database.password)). Defaults to `gerrit`.
+* `node['gerrit']['database']['username']` - Username to connect to the database server as ([database.username](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#database.username)). Defaults to `gerrit`.
+* `node['gerrit']['database']['password']` - Password to authenticate to the database server with ([database.password](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#database.password)). Defaults to `gerrit`.
 
 Theme
 -----
 
-* `node['gerrit']['theme']['compile_files]` - Hash of files deployed to `etc/`. Possible file names are `GerritSite(Header|Footer).html` and `GerritSite.css`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-headerfooter.html#_html_header_footer). Gerrit will automatically reload these files, as long as not deactivated explicitly.
-* `node['gerrit']['static_files']` - Hash of files deployed to `static/`. Files, which can be used in a custom theme and are available through `#{node['gerrit']['canonicalWebUrl']}/static/`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/config-headerfooter.html#_static_images).
+* `node['gerrit']['theme']['compile_files]` - Hash of files deployed to `etc/`. Possible file names are `GerritSite(Header|Footer).html` and `GerritSite.css`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-headerfooter.html#_html_header_footer). Gerrit will automatically reload these files, as long as not deactivated explicitly.
+* `node['gerrit']['static_files']` - Hash of files deployed to `static/`. Files, which can be used in a custom theme and are available through `#{node['gerrit']['canonicalWebUrl']}/static/`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-headerfooter.html#_static_images).
 
 Recipes
 =======
 
 default
 -------
-Sets up Gerrit. Includes other recipes, if needed (no need to add them to your run list on your own).
+Sets up Gerrit. **Includes other recipes, if needed (no need to add them to your run list on your own)**.
 
 mysql
 -----
@@ -90,6 +94,11 @@ proxy
 -----
 Installs Apache2 as reverse proxy in front of Gerrit, if enabled through `node['gerrit']['proxy']`. This also binds Gerrit's HTTPD to `localhost` on port 8080.
 HTTPS support is available, if `node['gerrit']['proxy']` is set.
+
+peer_keys
+---------
+Deploys an SSH key-pair for the magic _Gerrit Code Review_ user. See [suexec](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/cmd-suexec.html) and [File etc/peer_keys](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#_file_tt_etc_peer_keys_tt).
+Intended to be used in scripts.
 
 source
 ------
