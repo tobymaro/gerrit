@@ -221,3 +221,12 @@ cron "repack-repositories" do
   user node['gerrit']['user']
 end
 
+
+####################################
+# peer_keys
+####################################
+
+if node['gerrit']['peer_keys']['enabled']
+  require_recipe "gerrit::peer_keys"
+end
+
