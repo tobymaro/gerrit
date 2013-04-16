@@ -30,7 +30,7 @@ if node['gerrit']['ssl']
   include_recipe "apache2::mod_ssl"
 
   ssl_certfile_path = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-  ssl_keyfile_path  = "/etc/ssl/certs/ssl-cert-snakeoil.key"
+  ssl_keyfile_path  = "/etc/ssl/private/ssl-cert-snakeoil.key"
 
   # don't use snakeoil CA, if specified otherwise
   if node['gerrit']['ssl_certificate']
