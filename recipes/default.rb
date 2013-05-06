@@ -128,11 +128,11 @@ if platform?("debian") && !File.directory?(node['java']['java_home'])
    
   if node['lsb']['codename'] == "wheezy"
     Chef::Log.info "Debian Wheezy, going for Java 7"
-    node['java']['jdk_version'] = "7"
-    node['java']['java_home'] = "/usr/lib/jvm/java-7-openjdk-amd64"
+    node.default['java']['jdk_version'] = "7"
+    node.default['java']['java_home'] = "/usr/lib/jvm/java-7-openjdk-amd64"
   else
     Chef::Log.info "Going for Java 6"
-    node['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk"
+    node.default['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk"
   end
 end
 
