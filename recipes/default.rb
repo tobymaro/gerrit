@@ -117,25 +117,14 @@ if node['gerrit']['proxy']
   require_recipe "gerrit::proxy"
 end
 
-
 ####################################
 # Java
 ####################################
-
-
-if platform?("debian") && !File.directory?(node['java']['java_home'])
-  Chef::Log.warn "java_home doesn't exist. Adjusting it"
-   
-  if node['lsb']['codename'] == "wheezy"
-    Chef::Log.info "Debian Wheezy, going for Java 7"
-    node.default['java']['jdk_version'] = "7"
-    node.default['java']['java_home'] = "/usr/lib/jvm/java-7-openjdk-amd64"
-  else
-    Chef::Log.info "Going for Java 6"
-    node.default['java']['java_home'] = "/usr/lib/jvm/java-6-openjdk"
-  end
+if platform?("ubuntu")
+  package "openjdk-6-jre-headless"
+else
+  include_recipe "java"
 end
-
 
 
 ####################################
