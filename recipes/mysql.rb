@@ -21,7 +21,7 @@
 require_recipe "build-essential"
 require_recipe "mysql"
 require_recipe "mysql::server"
-require_recipe "database"
+require_recipe "database::mysql"
 
 # package "libmysql-java"
 
