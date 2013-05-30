@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-require_recipe "build-essential"
-require_recipe "mysql"
-require_recipe "mysql::server"
-require_recipe "database::mysql"
+include_recipe "build-essential"
+include_recipe "mysql"
+include_recipe "mysql::server"
+include_recipe "database::mysql"
 
 # package "libmysql-java"
 

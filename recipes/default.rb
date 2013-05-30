@@ -104,7 +104,7 @@ end
 ####################################
 
 if node['gerrit']['database']['type'] == "MYSQL"
-  require_recipe "gerrit::mysql"
+  include_recipe "gerrit::mysql"
 end
 
 
@@ -114,7 +114,7 @@ end
 ####################################
 
 if node['gerrit']['proxy']
-  require_recipe "gerrit::proxy"
+  include_recipe "gerrit::proxy"
 end
 
 ####################################
@@ -131,8 +131,8 @@ end
 # Deploy
 ####################################
 
-require_recipe "java"
-require_recipe "git"
+include_recipe "java"
+include_recipe "git"
 
 #directory "#{node['gerrit']['home']}/war" do
 #  owner node['gerrit']['user']
@@ -150,7 +150,7 @@ if node['gerrit']['flavor'] == "war"
     action :create_if_missing
   end
 else
-  require_recipe "gerrit::source"
+  include_recipe "gerrit::source"
   
   filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}-#{node['gerrit']['source']['reference']}.war"
 
@@ -216,6 +216,6 @@ end
 ####################################
 
 if node['gerrit']['peer_keys']['enabled']
-  require_recipe "gerrit::peer_keys"
+  include_recipe "gerrit::peer_keys"
 end
 
