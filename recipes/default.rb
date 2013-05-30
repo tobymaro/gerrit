@@ -69,7 +69,7 @@ end
 end
 
 template "#{node['gerrit']['install_dir']}/etc/secure.config" do
-  source "gerrit/secure.config"
+  source "gerrit/secure.config.erb"
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0600
@@ -196,7 +196,7 @@ directory "#{node['gerrit']['home']}/scripts" do
 end
 
 template "#{node['gerrit']['home']}/scripts/repack-repositories.sh" do
-  source "scripts/repack-repositories.sh"
+  source "scripts/repack-repositories.sh.erb"
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0744

@@ -33,7 +33,7 @@ remote_file "#{node['gerrit']['install_dir']}/lib/mysql-connector-java-5.1.10.ja
 end
 
 mysql_connection_info = {
-  :host =>  "localhost",
+  :host =>  node['mysql']['bind_address'],
   :username => "root",
   :password => node['mysql']['server_root_password']
 }
