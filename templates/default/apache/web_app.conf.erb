@@ -23,7 +23,8 @@
     Allow from all
   </Proxy>
 
-  ProxyPass        /   http://localhost:8080/
+  AllowEncodedSlashes On
+  ProxyPass        /   http://localhost:8080/ nocanon
 </VirtualHost>
 
 <% if node['gerrit']['ssl'] %>
