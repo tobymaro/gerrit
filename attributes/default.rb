@@ -45,7 +45,7 @@ default['gerrit']['ssl_certificate'] = nil
 
 
 default['gerrit']['database']['type'] = "MYSQL"
-default['gerrit']['database']['host'] = "localhost"
+default['gerrit']['database']['host'] = node['mysql']['bind_address']
 default['gerrit']['database']['name'] = "gerrit"
 default['gerrit']['database']['username'] = "gerrit"
 default['gerrit']['database']['password'] = "gerrit"
