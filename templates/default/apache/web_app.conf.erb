@@ -8,6 +8,9 @@
   SSLProxyEngine on
   SSLCertificateFile     <%= @params[:ssl_certfile] %>
   SSLCertificateKeyFile  <%= @params[:ssl_keyfile] %>
+  <% if @params[:ssl_cabundle_used] %>
+  SSLCACertificateFile   <%= @params[:ssl_cabundle] %>
+  <% end %>
   <% end %>
   
   LogLevel info
