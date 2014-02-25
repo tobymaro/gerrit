@@ -43,7 +43,8 @@ dirs = [
   node['gerrit']['install_dir'],
   node['gerrit']['install_dir'] + "/etc",
   node['gerrit']['install_dir'] + "/lib", 
-  node['gerrit']['install_dir'] + "/static"
+  node['gerrit']['install_dir'] + "/static",
+  node['gerrit']['install_dir'] + "/plugins"
 ]
 
 dirs.each do |dir|
@@ -160,6 +161,14 @@ else
     code "cp #{node['gerrit']['home']}/src/git/gerrit-war/target/gerrit-*.war #{filename}"
     notifies :run, "bash[gerrit-init]", :immediately
     creates filename
+  end
+end
+
+if node[:gerrit].attribute?('replication')
+  remote_file "#{node['gerrit']['home']}/review/plugins/replication.jar" do
+    owner node['gerrit']['user']
+    source node['gerrit']['replication']['plugin_download_url']
+    action :create_if_missing
   end
 end
 
