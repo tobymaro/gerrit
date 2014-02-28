@@ -55,18 +55,12 @@ dirs.each do |dir|
   end
 end
 
-
-%w{
-  gerrit.config
-  replication.config
-}.each do |file|
-  template "#{node['gerrit']['install_dir']}/etc/#{file}" do
-    source "gerrit/#{file}"
-    owner node['gerrit']['user']
-    group node['gerrit']['group']
-    mode 0644
-    notifies :restart, "service[gerrit]"
-  end
+template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
+  source "gerrit/#{file}"
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  mode 0644
+  notifies :restart, "service[gerrit]"
 end
 
 template "#{node['gerrit']['install_dir']}/etc/secure.config" do
@@ -169,6 +163,14 @@ if node[:gerrit].attribute?('replication')
     owner node['gerrit']['user']
     source node['gerrit']['replication']['plugin_download_url']
     action :create_if_missing
+  end
+
+  template "#{node['gerrit']['install_dir']}/etc/replication.config" do
+    source "gerrit/#{file}"
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+    mode 0644
+    notifies :restart, "service[gerrit]"
   end
 end
 
