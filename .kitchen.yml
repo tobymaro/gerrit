@@ -1,28 +1,32 @@
 ---
-driver_plugin: vagrant
-driver_config:
-  require_chef_omnibus: true
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
 
 platforms:
-- name: squeeze
-  driver_config:
-    box: squeeze
-- name: wheezy
-  driver_config:
-    box: wheezy
-    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.4_provisionerless.box
-;- name: ubuntu-12.04
-;  driver_config:
-;    box: ubuntu-12.04
-;    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_provisionerless.box
-;- name: ubuntu-10.04
-;  driver_config:
-;    box: opscode-ubuntu-10.04
-;    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_provisionerless.box
+  - name: centos-6.4
+  - name: debian-7.4
+    run_list:
+    - recipe[apt::default]
+  - name: ubuntu-12.04
+    run_list:
+    - recipe[apt::default]
 
 suites:
-- name: gerrit
-  run_list:
-  - recipe[gerrit]
-  attributes: { "mysql" : { "bind_address" : "127.0.0.1" } }
-
+  - name: DB-H2
+    run_list:
+      - recipe[gerrit::default]
+    attributes:
+      gerrit:
+        database:
+          type: "H2"
+#  - name: DB-MYSQL
+#    run_list:
+#      - recipe[gerrit::default]
+#    attributes:
+#      mysql:
+#        server_debian_password: "foo"
+#        server_root_password: "foo"
+#        server_repl_password: "foo"
