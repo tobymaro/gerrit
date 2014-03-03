@@ -56,7 +56,7 @@ dirs.each do |dir|
 end
 
 template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
-  source "gerrit/#{file}"
+  source "gerrit/gerrit.config"
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0644
@@ -166,7 +166,7 @@ if node[:gerrit].attribute?('replication')
   end
 
   template "#{node['gerrit']['install_dir']}/etc/replication.config" do
-    source "gerrit/#{file}"
+    source "gerrit/replication.config"
     owner node['gerrit']['user']
     group node['gerrit']['group']
     mode 0644
