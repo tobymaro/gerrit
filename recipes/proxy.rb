@@ -46,8 +46,10 @@ web_app node['gerrit']['hostname'] do
   server_aliases []
   docroot "/var/www"
   template "apache/web_app.conf.erb"
-  ssl_certfile         ssl_certfile_path
-  ssl_keyfile          ssl_keyfile_path
-  ssl_cabundle_used    ::File::exist?(ssl_cabundle_path)
-  ssl_cabundle         ssl_cabundle_path
+  if node['gerrit']['ssl']
+    ssl_certfile         ssl_certfile_path
+    ssl_keyfile          ssl_keyfile_path
+    ssl_cabundle_used    ::File::exist?(ssl_cabundle_path)
+    ssl_cabundle         ssl_cabundle_path
+  end
 end

@@ -79,6 +79,12 @@ Theme
 * `node['gerrit']['theme']['compile_files]` - Hash of files deployed to `etc/`. Possible file names are `GerritSite(Header|Footer).html` and `GerritSite.css`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-headerfooter.html#_html_header_footer). Gerrit will automatically reload these files, as long as not deactivated explicitly.
 * `node['gerrit']['static_files']` - Hash of files deployed to `static/`. Files, which can be used in a custom theme and are available through `#{node['gerrit']['canonicalWebUrl']}/static/`. See [Gerrit docs](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-headerfooter.html#_static_images).
 
+Replication
+-----------
+
+* `node['gerrit']['replication']['remotes']` - Hash of remotes to populate to `replication.config`. Keys should be the remote name, while values should be a hash of options to apply to that remote, such as `url`, `threads`, etc.`.  See [Gerrit docs](http://gerrit.googlecode.com/svn/documentation/2.0/config-replication.html).
+* `node['gerrit']['replication']['plugin_download_url']` - URL to download the `replication.jar` plugin file from.  The build must be compatible with the Gerrit version specified in `node['gerrit']['version']`.  See [Gerrit docs](http://gerrit.googlecode.com/svn/documentation/2.0/config-replication.html).
+
 Recipes
 =======
 

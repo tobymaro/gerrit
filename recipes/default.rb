@@ -43,7 +43,8 @@ dirs = [
   node['gerrit']['install_dir'],
   node['gerrit']['install_dir'] + "/etc",
   node['gerrit']['install_dir'] + "/lib", 
-  node['gerrit']['install_dir'] + "/static"
+  node['gerrit']['install_dir'] + "/static",
+  node['gerrit']['install_dir'] + "/plugins"
 ]
 
 dirs.each do |dir|
@@ -54,18 +55,12 @@ dirs.each do |dir|
   end
 end
 
-
-%w{
-  gerrit.config
-  replication.config
-}.each do |file|
-  template "#{node['gerrit']['install_dir']}/etc/#{file}" do
-    source "gerrit/#{file}"
-    owner node['gerrit']['user']
-    group node['gerrit']['group']
-    mode 0644
-    notifies :restart, "service[gerrit]"
-  end
+template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
+  source "gerrit/gerrit.config"
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
+  mode 0644
+  notifies :restart, "service[gerrit]"
 end
 
 template "#{node['gerrit']['install_dir']}/etc/secure.config" do
@@ -160,6 +155,22 @@ else
     code "cp #{node['gerrit']['home']}/src/git/gerrit-war/target/gerrit-*.war #{filename}"
     notifies :run, "bash[gerrit-init]", :immediately
     creates filename
+  end
+end
+
+if node[:gerrit].attribute?('replication')
+  remote_file "#{node['gerrit']['home']}/review/plugins/replication.jar" do
+    owner node['gerrit']['user']
+    source node['gerrit']['replication']['plugin_download_url']
+    action :create_if_missing
+  end
+
+  template "#{node['gerrit']['install_dir']}/etc/replication.config" do
+    source "gerrit/replication.config"
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+    mode 0644
+    notifies :restart, "service[gerrit]"
   end
 end
 
