@@ -179,7 +179,7 @@ else
   end
 end
 
-if node[:gerrit].attribute?('replication')
+if node['gerrit'].attribute?('replication')
   remote_file "#{node['gerrit']['home']}/review/plugins/replication.jar" do
     owner node['gerrit']['user']
     source node['gerrit']['replication']['plugin_download_url']
