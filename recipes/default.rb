@@ -100,6 +100,8 @@ end
 
 if node['gerrit']['database']['type'] == "MYSQL"
   include_recipe "gerrit::mysql"
+elsif node['gerrit']['database']['type'] == "POSTGRESQL"
+  include_recipe "gerrit::postgresql"
 end
 
 

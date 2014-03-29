@@ -22,11 +22,24 @@ suites:
       gerrit:
         database:
           type: "H2"
-#  - name: DB-MYSQL
-#    run_list:
-#      - recipe[gerrit::default]
-#    attributes:
-#      mysql:
-#        server_debian_password: "foo"
-#        server_root_password: "foo"
-#        server_repl_password: "foo"
+  - name: DB-MYSQL
+    run_list:
+      - recipe[gerrit::default]
+    attributes:
+      gerrit:
+        database:
+          type: MYSQL
+      mysql:
+        server_debian_password: "foo"
+        server_root_password: "foo"
+        server_repl_password: "foo"
+  - name: DB-POSTGRESQL
+    run_list:
+      - recipe[gerrit::default]
+    attributes:
+      gerrit:
+        database:
+          type: POSTGRESQL
+      postgresql:
+        password:
+          postgres: "foo"
