@@ -22,8 +22,6 @@ include_recipe "mysql"
 include_recipe "mysql::server"
 include_recipe "database::mysql"
 
-# package "libmysql-java"
-
 remote_file "#{node['gerrit']['install_dir']}/lib/mysql-connector-java-5.1.10.jar" do
   source "http://repo2.maven.org/maven2/mysql/mysql-connector-java/5.1.10/mysql-connector-java-5.1.10.jar"
   checksum "cf194019de3e54b3a9b9980462"
@@ -37,24 +35,8 @@ mysql_connection_info = {
   :password => node['mysql']['server_root_password']
 }
 
-
-###### this all doesn't work well, because Mysql.new tries to connect to MySQL which isn't running, yet..
-
-## we have to enforce installation of that package right now - before the chef_gem
-#package "libmysqlclient-dev" do
-#  action :install
-#end.run_action(:install)
-
-#begin
-#  chef_gem "mysql" do
-#    action :install
-#  end
-#  require "mysql"
-#  m = Mysql.new("localhost", "root", node['mysql']['server_root_password'])
-#  if m.list_dbs.include?(node['gerrit']['database']['name']) == false
- 
 mysql_database node['gerrit']['database']['name'] do
-connection mysql_connection_info
+  connection mysql_connection_info
   action :create
 end
 
