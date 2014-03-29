@@ -1,2 +1,5 @@
 [database]
 	password = <%= node.gerrit.database.password %>
+[auth]
+	registerEmailPrivateKey = <%= node.gerrit.auth.registerEmailPrivateKey %>
+	restTokenPrivateKey = <%= node.gerrit.auth.restTokenPrivateKey %>
