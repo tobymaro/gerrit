@@ -20,7 +20,7 @@
 
 default['gerrit']['flavor'] = "war"
 
-default['gerrit']['version'] = "2.8.1"
+default['gerrit']['version'] = "2.8.3"
 
 default['gerrit']['war']['download_url'] = "http://gerrit-releases.storage.googleapis.com/gerrit-#{node['gerrit']['version']}.war"
 
