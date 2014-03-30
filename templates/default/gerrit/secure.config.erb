@@ -1,5 +1,7 @@
+<% unless node['gerrit']['database']['type'] == 'H2' %>
 [database]
 	password = <%= node.gerrit.database.password %>
+<% end %>
 [auth]
 	registerEmailPrivateKey = <%= node.gerrit.auth.registerEmailPrivateKey %>
 	restTokenPrivateKey = <%= node.gerrit.auth.restTokenPrivateKey %>
