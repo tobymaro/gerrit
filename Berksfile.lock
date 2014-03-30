@@ -6,7 +6,6 @@ DEPENDENCIES
   ssl_certificates
     git: git://github.com/TYPO3-cookbooks/ssl_certificates.git
     branch: master
-    ref: fc9c5ab566b15eccf3a2ff296899802bceb50309
 
 GRAPH
   apache2 (1.10.0)
