@@ -69,6 +69,8 @@ default['gerrit']['database']['jdbc_url'] =
   "password=#{node['gerrit']['database']['password']}&" +
   "useUnicode=false&characterEncoding=latin1"
 
+default['gerrit']['index']['type'] = 'LUCENE'
+
 default['gerrit']['theme']['compile_files'] = []
 default['gerrit']['theme']['static_files'] = []
 
