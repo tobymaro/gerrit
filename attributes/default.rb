@@ -77,3 +77,6 @@ default['gerrit']['theme']['static_files'] = []
 default['gerrit']['peer_keys']['enabled'] = false
 default['gerrit']['peer_keys']['public'] = ""
 default['gerrit']['peer_keys']['private'] = ""
+
+# Gerrit 2.9 requires Java 7
+default['java']['jdk_version'] = 7 if node['java']['jdk_version'] < "7" && node['gerrit']['version'] >= "2.9"
