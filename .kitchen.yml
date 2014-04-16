@@ -81,3 +81,9 @@ suites:
       network:
       # - ["private_network", { ip: "192.168.33.102" }]
       # - ["forwarded_port", {guest: 8080, host: 8083}]
+  - name: TEST-CONFIG
+    run_list:
+      - recipe[gerrit::_config]
+    attributes:
+      gerrit:
+        proxy: false
