@@ -217,6 +217,14 @@ link "/etc/init.d/gerrit" do
   to "#{node['gerrit']['install_dir']}/bin/gerrit.sh"
 end
 
+# this is a relict from an old version of the cookbook that prevented gerrit
+# to start during system bootup and should be removed.
+# see https://github.com/TYPO3-cookbooks/gerrit/pull/17
+link "/etc/rc3.d/S90gerrit" do
+  to "../init.d/gerrit"
+  action :delete
+end
+
 service "gerrit" do
   supports :status => false, :restart => true, :reload => true
   action [ :enable, :start ]
