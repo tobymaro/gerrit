@@ -5,6 +5,7 @@ DEPENDENCIES
   postgresql (~> 3.3)
   ssl_certificates
     git: git://github.com/TYPO3-cookbooks/ssl_certificates.git
+    revision: fc9c5ab566b15eccf3a2ff296899802bceb50309
     branch: master
 
 GRAPH
