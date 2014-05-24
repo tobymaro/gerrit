@@ -236,6 +236,8 @@ end
 # Cron-Job
 ####################################
 
+include_recipe "cron"
+
 directory "#{node['gerrit']['home']}/scripts" do
   owner node['gerrit']['user']
 end
