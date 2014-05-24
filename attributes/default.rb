@@ -47,6 +47,7 @@ default['gerrit']['canonicalGitUrl'] = nil
 default['gerrit']['ssl'] = false
 default['gerrit']['ssl_certificate'] = nil
 
+default['gerrit']['container']['user'] = node['gerrit']['user']
 
 override['mysql']['bind_address'] = "127.0.0.1"
 default['gerrit']['database']['type'] = "MYSQL"
