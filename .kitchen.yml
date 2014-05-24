@@ -5,6 +5,9 @@ driver:
 provisioner:
   name: chef_zero
   data_path: test/shared
+  attributes:
+    apache:
+      default_site_enabled: false
 
 platforms:
   - name: centos-6.4
