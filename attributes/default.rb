@@ -18,19 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# todo remove
-default['gerrit']['flavor'] = "war"
-
+# we do not support Gerrit below 2.9
 default['gerrit']['version'] = "2.9.0-rc1"
-
 default['gerrit']['war']['download_url'] = "http://gerrit-releases.storage.googleapis.com/gerrit-#{node['gerrit']['version']}.war"
-
-# todo remove
-default['gerrit']['source']['repository'] = "https://gerrit.googlesource.com/gerrit"
 
 default['gerrit']['hostname'] = node['fqdn']
 
-
+	
 default['gerrit']['user'] = "gerrit"
 default['gerrit']['group'] = "gerrit"
 default['gerrit']['home'] = "/var/gerrit"
@@ -75,6 +69,8 @@ default['gerrit']['database']['jdbc_url'] =
 
 
 default['gerrit']['proxy'] = true
+
+# TODO I'm yet unsure, how to handle this in the future
 
 # if this is set, an entry in the ssl_certificates data bag matching the given name must exist
 # this uses the ssl-certificates cookbook

@@ -4,6 +4,10 @@ driver:
 
 provisioner:
   name: chef_zero
+  data_path: test/shared
+  attributes:
+    apache:
+      default_site_enabled: false
 
 platforms:
   - name: centos-6.4
@@ -65,10 +69,6 @@ suites:
         version: 2.9-rc1
         database:
           type: "H2"
-    driver:
-      network:
-      # - ["private_network", { ip: "192.168.33.101" }]
-      # - ["forwarded_port", {guest: 80, host: 8082}]
   - name: PROXY-NONE
     run_list:
       - recipe[gerrit::default]
@@ -76,14 +76,4 @@ suites:
       gerrit:
         database:
           type: H2
-        proxy: false
-    driver:
-      network:
-      # - ["private_network", { ip: "192.168.33.102" }]
-      # - ["forwarded_port", {guest: 8080, host: 8083}]
-  - name: TEST-CONFIG
-    run_list:
-      - recipe[gerrit::_config]
-    attributes:
-      gerrit:
         proxy: false
