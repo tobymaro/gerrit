@@ -37,6 +37,7 @@ include_recipe "gerrit::_java"
 
 
 include_recipe "gerrit::_deploy"
+include_recipe "gerrit::_replication"
 
 
 ####################################
