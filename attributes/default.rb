@@ -69,6 +69,10 @@ default['gerrit']['database']['jdbc_url'] =
     "useUnicode=false&characterEncoding=latin1"
 
 
+# the core plugins that should be installed. Installation only works at site initialization.
+default['gerrit']['core_plugins'] = ['replication', 'commit-message-length-validator', 'reviewnotes', 'download-commands']
+
+
 default['gerrit']['proxy'] = true
 
 # TODO I'm yet unsure, how to handle this in the future

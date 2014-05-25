@@ -15,11 +15,25 @@ remote_file filename do
   action :create_if_missing
 end
 
+####################################
+# Core Plugins
+####################################
+
+# we have to explicitly list the core plugins that should be installed
+plugin_command = ""
+node[:gerrit][:core_plugins].each do |plugin|
+  plugin_command << "  --install-plugin #{plugin}"
+end
+
+####################################
+# Gerrit init
+####################################
+
 execute "gerrit-init" do
   user node['gerrit']['user']
   group node['gerrit']['group']
   cwd "#{node['gerrit']['home']}/war"
-  command "java -jar #{filename} init --batch --no-auto-start -d #{node['gerrit']['install_dir']}"
+  command "java -jar #{filename} init --batch --no-auto-start -d #{node['gerrit']['install_dir']} #{plugin_command}"
   action :nothing
   notifies :restart, "service[gerrit]"
 end
