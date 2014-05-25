@@ -60,6 +60,7 @@ link "/etc/rc3.d/S90gerrit" do
   action :delete
 end
 
+# this should be moved to a later point, when all our configuration is written
 service "gerrit" do
   supports :status => false, :restart => true, :reload => true
   action [ :enable, :start ]
