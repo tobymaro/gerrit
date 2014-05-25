@@ -31,7 +31,9 @@ describe 'service apache2 httpd' do
   end
 
   it 'should answer to HTTP requests on port 80' do
-    before { pending "not working within Docker - Apache2 has to be restarted once more"}
+
+    pending "not working within Docker - Apache2 has to be restarted once more"
+
     case RSpec.configuration.os[:family]
       when "Ubuntu"
         @cmd = 'echo "GET / HTTP/1.1" | nc localhost 80'
