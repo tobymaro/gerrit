@@ -18,17 +18,17 @@
 #
 
 directory "#{node['gerrit']['install_dir']}/etc/" do
-  #owner node['gerrit']['user']
-  #group node['gerrit']['group']
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
   recursive true
 end
 
 template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
   source "gerrit/gerrit.config.erb"
-  #owner node['gerrit']['user']
-  #group node['gerrit']['group']
+  owner node['gerrit']['user']
+  group node['gerrit']['group']
   mode 0644
-  # notifies :restart, "service[gerrit]"
+  notifies :restart, "service[gerrit]"
 end
 
 if Chef::Config[:solo]
