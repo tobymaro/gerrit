@@ -17,10 +17,31 @@
 # limitations under the License.
 #
 
-directory "#{node['gerrit']['install_dir']}/etc/" do
+# make sure that some of the needed attributes are predefined with Chef Solo
+if Chef::Config[:solo]
+  missing_attrs = %w[
+    registerEmailPrivateKey
+    restTokenPrivateKey
+  ].select { |attr| node['gerrit']['config']['auth'][attr].nil? }.map { |attr| %Q{node['gerrit']['config']['auth']['#{attr}']} }
+
+  unless missing_attrs.empty?
+    Chef::Application.fatal! "You must set #{missing_attrs.join(', ')} in chef-solo mode."
+  end
+else
+  # generate all passwords
+  require 'securerandom'
+
+  node.set_unless['gerrit']['config']['auth']['registerEmailPrivateKey'] = SecureRandom::base64(32)
+  node.set_unless['gerrit']['config']['auth']['restTokenPrivateKey']   = SecureRandom::base64(32)
+  node.save
+end
+
+template "#{node['gerrit']['install_dir']}/etc/secure.config" do
+  source "gerrit/secure.config.erb"
   owner node['gerrit']['user']
   group node['gerrit']['group']
-  recursive true
+  mode 0600
+  notifies :restart, "service[gerrit]"
 end
 
 template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
@@ -29,30 +50,4 @@ template "#{node['gerrit']['install_dir']}/etc/gerrit.config" do
   group node['gerrit']['group']
   mode 0644
   notifies :restart, "service[gerrit]"
-end
-
-if Chef::Config[:solo]
-  missing_attrs = %w[
-    registerEmailPrivateKey
-    restTokenPrivateKey
-  ].select { |attr| node['gerrit']['auth'][attr].nil? }.map { |attr| %Q{node['gerrit']['auth']['#{attr}']} }
-
-  unless missing_attrs.empty?
-    Chef::Application.fatal! "You must set #{missing_attrs.join(', ')} in chef-solo mode."
-  end
-else
-
-  # generate all passwords
-  node.set_unless['gerrit']['config']['auth']['registerEmailPrivateKey'] = SecureRandom::base64(32)
-  node.set_unless['gerrit']['config']['auth']['restTokenPrivateKey']   = SecureRandom::base64(32)
-  node.save
-end
-
-node.set['gerrit']['config']['test2']['foo'] = 'above' if gerrit_above?("2.9.0")
-template "#{node['gerrit']['install_dir']}/etc/secure.config" do
-  source "gerrit/secure.config.erb"
-  #owner node['gerrit']['user']
-  #group node['gerrit']['group']
-  mode 0600
-  # notifies :restart, "service[gerrit]"
 end
