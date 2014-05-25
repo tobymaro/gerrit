@@ -33,10 +33,8 @@ These attributes are set by the cookbook by default.
 Deployment
 ----------
 
-* `node['gerrit']['flavor']` - Installation type, either `war` or `source`. `war` downloads the `.war` file from `download_url`. `source` checks out the git repository `repository` and builds it using Maven. Please note that the `source` flavor is absolutely *not* recommended for production use. Building Gerrit will cause severe load on your server!
 * `node['gerrit']['version']` - Gerrit version to deploy.
 * `node['gerrit']['download_url']` - URL to download the `.war` file from. Defaults to `http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war`
-* `node['gerrit']['repository']` - Git repository containing the Gerrit source code. Defaults to `https://gerrit.googlesource.com/gerrit`.
 * `node['gerrit']['reference']` - Git revision or branch name to checkout.
 
 User and path setup

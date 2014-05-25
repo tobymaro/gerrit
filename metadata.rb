@@ -13,6 +13,5 @@ end
 recipe "gerrit::default", "Installs and configures Gerrit. Includes other recipes, if needed"
 recipe "gerrit::mysql", "Installs MySQL server and configures Gerrit to use MySQL"
 recipe "gerrit::proxy", "Installs Apache2 as reverse proxy in front of Gerrit"
-recipe "gerrit::source", "Checks out Gerrit source code from Git and builds it using maven."
 
 supports "debian"

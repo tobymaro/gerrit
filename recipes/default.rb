@@ -136,34 +136,15 @@ end
 include_recipe "java"
 include_recipe "git"
 
-#directory "#{node['gerrit']['home']}/war" do
-#  owner node['gerrit']['user']
-#  group node['gerrit']['group']
-#end
+filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
 
-if node['gerrit']['flavor'] == "war"
-  filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
-
-  remote_file filename do
-    owner node['gerrit']['user']
-    source node['gerrit']['war']['download_url']
-    # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
-    notifies :run, "execute[gerrit-init]", :immediately
-    notifies :run, "execute[gerrit-reindex]", :immediately if node['gerrit']['version'] >= "2.9"
-    action :create_if_missing
-  end
-else
-  include_recipe "gerrit::source"
-  
-  filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}-#{node['gerrit']['source']['reference']}.war"
-
-  bash "copy war" do
-    Chef::Log.info "Created " + filename
-    user node['gerrit']['user']
-    code "cp #{node['gerrit']['home']}/src/git/gerrit-war/target/gerrit-*.war #{filename}"
-    notifies :run, "execute[gerrit-init]", :immediately
-    creates filename
-  end
+remote_file filename do
+  owner node['gerrit']['user']
+  source node['gerrit']['war']['download_url']
+  # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
+  notifies :run, "execute[gerrit-init]", :immediately
+  notifies :run, "execute[gerrit-reindex]", :immediately if node['gerrit']['version'] >= "2.9"
+  action :create_if_missing
 end
 
 if node['gerrit'].attribute?('replication')
@@ -221,8 +202,6 @@ end
 ####################################
 # Cron-Job
 ####################################
-
-include_recipe "cron"
 
 directory "#{node['gerrit']['home']}/scripts" do
   owner node['gerrit']['user']
