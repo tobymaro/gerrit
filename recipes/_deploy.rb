@@ -21,7 +21,7 @@ end
 
 # we have to explicitly list the core plugins that should be installed
 plugin_command = ""
-node[:gerrit][:core_plugins].each do |plugin|
+node['gerrit']['core_plugins'].each do |plugin|
   plugin_command << "  --install-plugin #{plugin}"
 end
 
