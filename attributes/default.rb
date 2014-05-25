@@ -31,6 +31,7 @@ default['gerrit']['home'] = "/var/gerrit"
 default['gerrit']['install_dir'] = "#{node['gerrit']['home']}/review"
 
 # These settings will end up in etc/gerrit.config
+default['gerrit']['config']['gerrit']['basePath'] = "git"   # location of git repositories
 default['gerrit']['config']['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
 default['gerrit']['config']['gerrit']['canonicalGitUrl'] = nil
 default['gerrit']['config']['auth']['type'] = "OPENID"
