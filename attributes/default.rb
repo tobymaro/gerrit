@@ -16,25 +16,25 @@ default['gerrit']['proxy']['ssl'] = false
 # These settings will end up in etc/gerrit.config
 default['gerrit']['config']['gerrit']['basePath'] = "git"   # location of git repositories
 default['gerrit']['config']['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
-default['gerrit']['config']['gerrit']['canonicalGitUrl'] = nil
-default['gerrit']['config']['auth']['type'] = "OPENID"
-default['gerrit']['config']['auth']['registerEmailPrivateKey'] = nil
-default['gerrit']['config']['auth']['restTokenPrivateKey'] = nil
-default['gerrit']['config']['sendemail']['smtpServer'] = "localhost"
-default['gerrit']['config']['sshd']['listenAddress'] = "29418"
-default['gerrit']['config']['database']['type'] = "h2"
-default['gerrit']['config']['database']['database'] = node['gerrit']['config']['database']['type'] == "H2" ? "db/ReviewDB" : "gerrit"
+default['gerrit']['config']['database']['type'] = "H2"
+default['gerrit']['config']['database']['database'] = node['gerrit']['config']['database']['type'].upcase == "H2" ? "db/ReviewDB" : "reviewdb"
 default['gerrit']['config']['database']['hostname'] = "localhost"
 default['gerrit']['config']['database']['username'] = "gerrit"
 default['gerrit']['config']['database']['password'] = "gerrit"
 default['gerrit']['config']['index']['type'] = "LUCENE"
+default['gerrit']['config']['auth']['type'] = "OPENID"
+default['gerrit']['config']['auth']['registerEmailPrivateKey'] = nil
+default['gerrit']['config']['auth']['restTokenPrivateKey'] = nil
+default['gerrit']['config']['sendemail']['smtpServer'] = "localhost"
+default['gerrit']['config']['container']['user'] = node['gerrit']['user']
+default['gerrit']['config']['sshd']['listenAddress'] = "*:29418"
+default['gerrit']['config']['cache']['directory'] = "cache"
 default['gerrit']['config']['httpd']['listenUrl'] = "http://*:8080"
 
 # these confidential attributes defined in gerrit_config will be shifted to etc/secure.config
 default['gerrit']['secure_config']['database']['password'] = true
 default['gerrit']['secure_config']['auth']['registerEmailPrivateKey'] = true
 default['gerrit']['secure_config']['auth']['restTokenPrivateKey'] = true
-default['gerrit']['secure_config']['ldap']['secureFoo'] = true
 
 
 # When using MySql as a db for Gerrit, the Gerrit documentation recommends changing the db charset
