@@ -48,7 +48,7 @@ default['gerrit']['config']['database']['hostname'] = "localhost"
 default['gerrit']['config']['database']['username'] = "gerrit"
 default['gerrit']['config']['database']['password'] = "gerrit"
 default['gerrit']['config']['index']['type'] = "LUCENE"
-
+default['gerrit']['config']['httpd']['listenUrl'] = "http://*:8080"
 
 # these confidential attributes defined in gerrit_config will be shifted to etc/secure.config
 default['gerrit']['secure_config']['database']['password'] = true

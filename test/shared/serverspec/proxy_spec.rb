@@ -45,4 +45,8 @@ describe 'service apache2 httpd' do
   end
 end
 
-
+describe 'gerrit.config' do
+  it 'should set the correct listenUrl for proxy setup' do
+    expect(file '/var/gerrit/review/etc/gerrit.config').to contain "listenUrl = proxy-http://*:8080"
+  end
+end
