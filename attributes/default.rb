@@ -30,6 +30,9 @@ default['gerrit']['group'] = "gerrit"
 default['gerrit']['home'] = "/var/gerrit"
 default['gerrit']['install_dir'] = "#{node['gerrit']['home']}/review"
 
+default['gerrit']['proxy']['enable'] = true
+default['gerrit']['proxy']['ssl'] = false
+
 # These settings will end up in etc/gerrit.config
 default['gerrit']['config']['gerrit']['basePath'] = "git"   # location of git repositories
 default['gerrit']['config']['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
@@ -73,7 +76,6 @@ default['gerrit']['database']['jdbc_url'] =
 default['gerrit']['core_plugins'] = ['replication', 'commit-message-length-validator', 'reviewnotes', 'download-commands']
 
 
-default['gerrit']['proxy'] = true
 
 # TODO I'm yet unsure, how to handle this in the future
 

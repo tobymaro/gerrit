@@ -27,11 +27,7 @@ include_recipe "gerrit::_config"
 
 include_recipe "gerrit::_database"
 
-####################################
-# Proxy
-####################################
-
-if node['gerrit']['proxy']
+if node['gerrit']['proxy']['enable']
   include_recipe "gerrit::proxy"
 end
 

@@ -62,4 +62,5 @@ suites:
       - recipe[gerrit::default]
     attributes:
       gerrit:
-        proxy: false
+        proxy:
+          enable: false
