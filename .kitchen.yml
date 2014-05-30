@@ -31,10 +31,6 @@ suites:
     run_list:
       - recipe[gerrit::default]
     excludes: ["ubuntu-13.10"]
-    attributes:
-      gerrit:
-        database:
-          type: "H2"
   - name: DB-MYSQL
     run_list:
       - recipe[gerrit::default]
@@ -66,6 +62,4 @@ suites:
       - recipe[gerrit::default]
     attributes:
       gerrit:
-        database:
-          type: H2
         proxy: false
