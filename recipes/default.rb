@@ -18,6 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+include_recipe "git"
+include_recipe "java"
+
 include_recipe "gerrit::_system"
 include_recipe "gerrit::_config"
 
@@ -31,10 +34,6 @@ include_recipe "gerrit::_database"
 if node['gerrit']['proxy']
   include_recipe "gerrit::proxy"
 end
-
-
-include_recipe "gerrit::_java"
-
 
 include_recipe "gerrit::_deploy"
 include_recipe "gerrit::_replication"
