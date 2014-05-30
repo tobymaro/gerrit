@@ -61,14 +61,6 @@ suites:
       postgresql:
         password:
           postgres: "foo"
-  - name: VERSION-2.9
-    run_list:
-      - recipe[gerrit::default]
-    attributes:
-      gerrit:
-        version: 2.9-rc1
-        database:
-          type: "H2"
   - name: PROXY-NONE
     run_list:
       - recipe[gerrit::default]
