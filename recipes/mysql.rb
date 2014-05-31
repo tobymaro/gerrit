@@ -37,27 +37,23 @@ mysql_connection_info = {
   :password => node['mysql']['server_root_password']
 }
 
-mysql_database node['gerrit']['database']['name'] do
+mysql_database node['gerrit']['config']['database']['database'] do
   connection mysql_connection_info
   action :create
 end
 
 mysql_database "changing the charset of database" do
   connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
+  database_name node['gerrit']['config']['database']['database']
   action :query
-  sql "ALTER DATABASE #{node['gerrit']['database']['name']} charset=latin1"
+  sql "ALTER DATABASE #{node['gerrit']['config']['database']['database']} charset=latin1"
 end
 
-mysql_database_user node['gerrit']['database']['username'] do
+mysql_database_user node['gerrit']['config']['database']['username'] do
+  username node['gerrit']['config']['database']['username']
   connection mysql_connection_info
-  password node['gerrit']['database']['password']
-  action :create
-end
-
-mysql_database_user node['gerrit']['database']['username'] do
-  connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
+  database_name node['gerrit']['config']['database']['database']
+  password node['gerrit']['config']['database']['password']
   privileges [
     :all
   ]
