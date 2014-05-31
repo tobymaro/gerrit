@@ -1,3 +1,6 @@
+require 'uri'
+require 'pathname'
+
 ####################################
 # Deploy
 ####################################
@@ -23,6 +26,23 @@ end
 plugin_command = ""
 node['gerrit']['core_plugins'].each do |plugin|
   plugin_command << "  --install-plugin #{plugin}"
+end
+
+###################################
+# External Libs
+##################################
+
+{
+  'http://www.bouncycastle.org/download/bcprov-jdk15on-149.jar' => 'f5155f04330459104b79923274db5060c1057b99',
+  'http://www.bouncycastle.org/download/bcpkix-jdk15on-149.jar' => '924cc7ad2f589630c97b918f044296ebf1bb6855',
+}.each do |url,checksum|
+  lib_filename = Pathname.new(URI.parse(url).path).basename.to_s
+  remote_file "#{node['gerrit']['install_dir']}/lib/#{lib_filename}" do
+    source url
+    checksum checksum
+    owner node['gerrit']['user']
+    group node['gerrit']['group']
+  end
 end
 
 ####################################
