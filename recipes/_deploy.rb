@@ -12,7 +12,7 @@ remote_file war_path do
   source node['gerrit']['war']['download_url']
   # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
   notifies :run, "execute[gerrit-init]", :immediately
-  notifies :run, "execute[gerrit-reindex]", :immediately if node['gerrit']['version'] >= "2.9"
+  notifies :run, "execute[gerrit-reindex]", :immediately
   action :create_if_missing
 end
 
