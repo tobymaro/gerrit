@@ -36,3 +36,7 @@ if node['gerrit']['peer_keys']['enabled']
   include_recipe "gerrit::peer_keys"
 end
 
+service "gerrit" do
+  supports :status => false, :restart => true, :reload => true
+  action [ :enable, :start ]
+end

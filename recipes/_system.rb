@@ -36,11 +36,15 @@ dirs.each do |dir|
 end
 
 ####################################
-# /etc/default
+# /etc
 ####################################
 
 template "/etc/default/gerritcodereview" do
   source "system/default.gerritcodereview.erb"
   mode 0644
   notifies :restart, "service[gerrit]"
+end
+
+link "/etc/init.d/gerrit" do
+  to "#{node['gerrit']['install_dir']}/bin/gerrit.sh"
 end
