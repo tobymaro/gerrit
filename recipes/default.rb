@@ -23,8 +23,6 @@ include_recipe "java"
 
 include_recipe "gerrit::_system"
 include_recipe "gerrit::_config"
-
-
 include_recipe "gerrit::_database"
 
 if node['gerrit']['proxy']['enable']
@@ -33,11 +31,6 @@ end
 
 include_recipe "gerrit::_deploy"
 include_recipe "gerrit::_replication"
-
-
-####################################
-# peer_keys
-####################################
 
 if node['gerrit']['peer_keys']['enabled']
   include_recipe "gerrit::peer_keys"
