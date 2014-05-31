@@ -5,7 +5,6 @@ require 'pathname'
 # Deploy
 ####################################
 
-include_recipe "git"
 war_path = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
 
 remote_file war_path do
