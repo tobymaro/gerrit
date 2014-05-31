@@ -6,10 +6,9 @@ require 'pathname'
 ####################################
 
 include_recipe "git"
+war_path = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
 
-filename = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
-
-remote_file filename do
+remote_file war_path do
   owner node['gerrit']['user']
   source node['gerrit']['war']['download_url']
   # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
@@ -53,7 +52,7 @@ execute "gerrit-init" do
   user node['gerrit']['user']
   group node['gerrit']['group']
   cwd "#{node['gerrit']['home']}/war"
-  command "java -jar #{filename} init --batch --no-auto-start -d #{node['gerrit']['install_dir']} #{plugin_command}"
+  command "java -jar #{war_path} init --batch --no-auto-start -d #{node['gerrit']['install_dir']} #{plugin_command}"
   action :nothing
   notifies :restart, "service[gerrit]"
 end
@@ -62,7 +61,7 @@ execute "gerrit-reindex" do
   user node['gerrit']['user']
   group node['gerrit']['group']
   cwd "#{node['gerrit']['home']}/war"
-  command "java -jar #{filename} reindex -d #{node['gerrit']['install_dir']}"
+  command "java -jar #{war_path} reindex -d #{node['gerrit']['install_dir']}"
   action :nothing
 end
 
