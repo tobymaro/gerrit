@@ -47,6 +47,6 @@ end
 
 describe 'gerrit.config' do
   it 'should set the correct listenUrl for proxy setup' do
-    expect(file '/var/gerrit/review/etc/gerrit.config').to contain "listenUrl = proxy-http://*:8080"
+    expect(file '/var/gerrit/review/etc/gerrit.config').to contain "listenUrl = proxy-http://127.0.0.1:8080"
   end
 end
