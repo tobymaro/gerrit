@@ -10,9 +10,9 @@ provisioner:
       default_site_enabled: false
 
 platforms:
+  - name: debian-7.4
   - name: centos-6.4
   - name: centos-6.5
-  - name: debian-7.4
     run_list:
     - recipe[apt::default]
   - name: ubuntu-12.04
