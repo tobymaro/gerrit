@@ -26,6 +26,6 @@ end
 
 describe 'gerrit.config' do
   it 'should set correct listenUrl for using no proxy' do
-    expect(file '/var/gerrit/review/etc/gerrit.config').to contain "listenUrl = http://*:8080"
+    expect(file '/var/gerrit/review/etc/gerrit.config').to contain "listenUrl = http://127.0.0.1:8080"
   end
 end
