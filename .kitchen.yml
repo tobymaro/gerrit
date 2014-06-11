@@ -28,8 +28,8 @@ platforms:
 #    # Action 'configtest' failed.
 #    run_list:
 #    - recipe[apt::default]
-  - name: centos-6.4
-  - name: centos-6.5
+#  - name: centos-6.4
+#  - name: centos-6.5
 
 
 suites:
