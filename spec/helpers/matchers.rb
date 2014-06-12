@@ -22,11 +22,7 @@ if defined?(ChefSpec)
     end
 
     def with(parameters = {})
-      #puts "==== with start ===="
-      #puts params
       params.merge!(parameters)
-      #puts params
-      #puts "=== with end ===="
       self
     end
 
