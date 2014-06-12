@@ -68,7 +68,7 @@ if defined?(ChefSpec)
       end
     end
 
-    def failure_message_for_should
+    def failure_message
       if resource
         if resource.performed_action?('create')
           if unmatched_parameters.empty?
@@ -97,7 +97,7 @@ if defined?(ChefSpec)
       end
     end
 
-    def failure_message_for_should_not
+    def failure_message_when_negated
       if resource
         message = %Q{expected "#{resource.to_s}" actions #{resource.performed_actions.inspect} to not exist}
       else
