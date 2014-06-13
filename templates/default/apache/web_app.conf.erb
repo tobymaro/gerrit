@@ -3,7 +3,7 @@
   ServerAlias <% @params[:server_aliases].each do |a| %><%= "#{a}" %> <% end %>
   DocumentRoot <%= @params[:docroot] %>
  
-  <% if node['gerrit']['ssl'] %>
+  <% if node['gerrit']['proxy']['ssl'] %>
   SSLEngine on
   SSLProxyEngine on
   SSLCertificateFile     <%= @params[:ssl_certfile] %>
@@ -30,7 +30,7 @@
   ProxyPass        /   http://localhost:8080/ nocanon
 </VirtualHost>
 
-<% if node['gerrit']['ssl'] %>
+<% if node['gerrit']['proxy']['ssl'] %>
 <VirtualHost *:80>
   ServerName <%= @params[:server_name] %>
   ServerAlias <% @params[:server_aliases].each do |a| %><%= "#{a}" %> <% end %>
