@@ -32,13 +32,16 @@ describe 'gerrit::proxy' do
     )
   end
 
-  xit 'create apache proxy with custom ssl attributes' do
+  it 'create apache proxy with custom ssl attributes' do
       chef_run.node.set['gerrit']['proxy']['ssl'] = true
+      chef_run.node.set['gerrit']['proxy']['ssl_certfile'] = "/custom/value/cert.crt"
+      chef_run.node.set['gerrit']['proxy']['ssl_keyfile'] = "/custom/value/key.key"
+      chef_run.node.set['gerrit']['proxy']['ssl_cabundle'] = "/custom/value/bundle.bundle"
       chef_run.converge(described_recipe) # The converge happens inside the test
       expect(chef_run).to enable_apache_web_app("#{hostname}").with(
         ssl_certfile: "/custom/value/cert.crt",
         ssl_keyfile: "/custom/value/key.key",
-        ssl_cabundle: "/custom/value/bundle.bndl"
+        ssl_cabundle: "/custom/value/bundle.bundle"
       )
   end
 end
