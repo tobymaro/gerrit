@@ -6,7 +6,7 @@ describe 'gerrit::_config' do
   let(:user)             { 'gerrit' }
     
   context 'proxy is enabled by default' do
-    let(:chef_run) do
+    cached(:chef_run) do
       ChefSpec::Runner.new do |node|
         puts(described_recipe)
         node.set['gerrit']['install_dir'] = install_dir
@@ -27,7 +27,7 @@ describe 'gerrit::_config' do
   end
   
   context 'proxy is disabled' do
-    let(:chef_run) do
+    cached(:chef_run) do
       ChefSpec::Runner.new do |node|
         puts(described_recipe)
         node.set['gerrit']['install_dir'] = install_dir
