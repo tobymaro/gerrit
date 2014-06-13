@@ -62,13 +62,8 @@ default['gerrit']['core_plugins'] = ['replication', 'commit-message-length-valid
 # if this is set, an entry in the ssl_certificates data bag matching the given name must exist
 # this uses the ssl-certificates cookbook
 # http://github.com/binarymarbles/chef-ssl-certificates
-default['gerrit']['ssl'] = false
-default['gerrit']['ssl_certificate'] = nil
-
 
 override['mysql']['bind_address'] = "127.0.0.1"
-
-
 
 default['gerrit']['theme']['compile_files'] = []
 default['gerrit']['theme']['static_files'] = []
