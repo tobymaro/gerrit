@@ -39,7 +39,7 @@ web_app node['gerrit']['hostname'] do
   server_aliases []
   docroot "/var/www"
   template "apache/web_app.conf.erb"
-  if node['gerrit']['ssl']
+  if node['gerrit']['proxy']['ssl']
     ssl_certfile         ssl_certfile_path
     ssl_keyfile          ssl_keyfile_path
     ssl_cabundle         ssl_cabundle_path

@@ -24,7 +24,7 @@ describe 'gerrit::proxy' do
   end
   
   it 'create apache proxy with default ssl attributes' do
-    chef_run.node.set['gerrit']['ssl'] = true
+    chef_run.node.set['gerrit']['proxy']['ssl'] = true
     chef_run.converge(described_recipe) # The converge happens inside the test
     expect(chef_run).to enable_apache_web_app("#{hostname}").with(
       ssl_certfile: "/etc/ssl/certs/ssl-cert-snakeoil.pem",
