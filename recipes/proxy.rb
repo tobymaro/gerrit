@@ -29,9 +29,9 @@ end
 if node['gerrit']['proxy']['ssl']
   include_recipe "apache2::mod_ssl"
 
-  ssl_certfile_path = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-  ssl_keyfile_path  = "/etc/ssl/private/ssl-cert-snakeoil.key"
-  ssl_cabundle_path = nil
+  ssl_certfile_path = node['gerrit']['proxy']['ssl_certfile'] || "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  ssl_keyfile_path  = node['gerrit']['proxy']['ssl_keyfile'] || "/etc/ssl/private/ssl-cert-snakeoil.key"
+  ssl_cabundle_path = node['gerrit']['proxy']['ssl_cabundle'] || nil
 end
 
 web_app node['gerrit']['hostname'] do
