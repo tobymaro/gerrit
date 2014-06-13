@@ -4,14 +4,21 @@ default['gerrit']['war']['download_url'] = "http://gerrit-releases.storage.googl
 
 default['gerrit']['hostname'] = node['fqdn']
 
-	
+# basic system related settings
 default['gerrit']['user'] = "gerrit"
 default['gerrit']['group'] = "gerrit"
 default['gerrit']['home'] = "/var/gerrit"
 default['gerrit']['install_dir'] = "#{node['gerrit']['home']}/review"
 
+
+# setup an (apache) proxy for gerrit, will also adjust the listenUrl for gerrit
 default['gerrit']['proxy']['enable'] = true
+# setup the proxy with ssl support, uses snakeoil certifcate by default
 default['gerrit']['proxy']['ssl'] = false
+# setting path to ssl_related files (certificate, key and cabundle) instead of using snakeoil default
+default['gerrit']['proxy']['ssl_certfile'] = nil
+default['gerrit']['proxy']['ssl_keyfile'] = nil
+default['gerrit']['proxy']['ssl_cabundle'] = nil
 
 # These settings will end up in etc/gerrit.config
 default['gerrit']['config']['gerrit']['basePath'] = "git"   # location of git repositories
