@@ -10,7 +10,6 @@ describe 'gerrit::proxy' do
   let(:chef_run) do
     ChefSpec::Runner.new do |node|
       node.set['gerrit']['install_dir'] = install_dir
-      #node.set['gerrit']['proxy']['enable'] = false
       node.set['gerrit']['hostname'] = hostname
     end.converge(described_recipe)
   end
@@ -31,5 +30,15 @@ describe 'gerrit::proxy' do
       ssl_keyfile: "/etc/ssl/private/ssl-cert-snakeoil.key",
       ssl_cabundle: nil
     )
+  end
+
+  xit 'create apache proxy with custom ssl attributes' do
+      chef_run.node.set['gerrit']['proxy']['ssl'] = true
+      chef_run.converge(described_recipe) # The converge happens inside the test
+      expect(chef_run).to enable_apache_web_app("#{hostname}").with(
+        ssl_certfile: "/custom/value/cert.crt",
+        ssl_keyfile: "/custom/value/key.key",
+        ssl_cabundle: "/custom/value/bundle.bndl"
+      )
   end
 end
