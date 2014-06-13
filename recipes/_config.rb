@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# we need to explicitly include the ::default recipe as we need service[gerrit], otherwise we can't run chefspec on this recipe
+include_recipe "gerrit::default"
 
 # make sure that some of the needed attributes are predefined with Chef Solo
 if Chef::Config[:solo]
