@@ -26,7 +26,7 @@ apache_site "default" do
   enable false
 end
 
-if node['gerrit']['ssl']
+if node['gerrit']['proxy']['ssl']
   include_recipe "apache2::mod_ssl"
 
   ssl_certfile_path = "/etc/ssl/certs/ssl-cert-snakeoil.pem"

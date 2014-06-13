@@ -52,7 +52,7 @@ HTTP and friends
 connections on ([sshd.listenAddress](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#sshd.listenAddress)).
 * `node['gerrit']['canonicalGitUrl']` - The URL under which the repositories are available through the Git protocol ([gerrit.canonicalGitUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#gerrit.canonicalGitUrl)). Has to include the protocol (`git://`). As Gerrit does _not_ support the Git protocol, such a server has to be managed through another cookbook, e.g. [git-daemon](http://github.com/typo3-cookbooks/git-daemon).
 * `node['gerrit']['proxy']` - Enable Apache2 reverse proxy in front of Gerrit. Defaults to `true`, which makes Gerrit available on port 80.
-* `node['gerrit']['ssl']` - Enable SSL for the reverse proxy. Defaults to `false`.
+* `node['gerrit']['proxy']['ssl']` - Enable SSL for the reverse proxy. Defaults to `false`.
 
 SSHD
 ----
