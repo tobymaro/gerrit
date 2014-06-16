@@ -19,7 +19,7 @@ describe 'gerrit::_config' do
       expect(chef_run).to render_file("/var/gerrit/etc/gerrit.config").with_content('listenUrl = proxy-http://127.0.0.1:8080')
     end
     
-    it 'sets listenUrl to proxy-https with ssl enabled' do
+    it 'sets listenUrl to proxy-http with ssl enabled' do
       chef_run.node.set['gerrit']['proxy']['ssl'] = true
       chef_run.converge(described_recipe) # The converge happens inside the test
       expect(chef_run).to render_file("/var/gerrit/etc/gerrit.config").with_content('listenUrl = proxy-http://127.0.0.1:8080')
@@ -41,10 +41,6 @@ describe 'gerrit::_config' do
       chef_run.node.set['gerrit']['proxy']['enable'] = false
       chef_run.converge(described_recipe)
       expect(chef_run).to render_file("/var/gerrit/etc/gerrit.config").with_content('listenUrl = http://*:8080')
-    end
-  
-    xit 'UNSUPPORTED FEATURE: sets listenUrl to https for proxy disabled with ssl enabled' do
-      pending("gerrit ssl without ssl is not supported")
     end
 
   end
