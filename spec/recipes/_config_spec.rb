@@ -22,7 +22,7 @@ describe 'gerrit::_config' do
     it 'sets listenUrl to proxy-http with ssl enabled' do
       chef_run.node.set['gerrit']['proxy']['ssl'] = true
       chef_run.converge(described_recipe) # The converge happens inside the test
-      expect(chef_run).to render_file("/var/gerrit/etc/gerrit.config").with_content('listenUrl = proxy-http://127.0.0.1:8080')
+      expect(chef_run).to render_file("/var/gerrit/etc/gerrit.config").with_content('listenUrl = proxy-https://127.0.0.1:8080')
     end
   end
   

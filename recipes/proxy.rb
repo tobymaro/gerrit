@@ -49,4 +49,4 @@ end
 ##################
 # httpd.listenUrl
 ##################
-node.set['gerrit']['config']['httpd']['listenUrl'] = "proxy-http://127.0.0.1:8080"
+node.set['gerrit']['config']['httpd']['listenUrl'] = node['gerrit']['proxy']['ssl'] ? "proxy-https://127.0.0.1:8080" : "proxy-http://127.0.0.1:8080"
