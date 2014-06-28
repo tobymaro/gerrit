@@ -42,28 +42,27 @@ ruby_block "gerrit create batch_admin_user" do
     has_admin = ssh_can_connect?(batch_admin_username, "#{ssh_key_file}.pub", node['gerrit']['hostname'], 29418)
     
     unless has_admin then
-      cmd = "java -jar #{war_path} gsql --format JSON -c 'SELECT * from accounts;' -d #{node['gerrit']['install_dir']}"
-      select_account = Mixlib::ShellOut.new(cmd, :user => node['gerrit']['user'], :cwd => "#{node['gerrit']['home']}/war")
-      select_account.run_command
-      parsed = JSON.parse(select_account.stdout)
-      puts parsed
-      select_account.error!
+      # add account
+      test = run_gsql("SELECT * FROM account_external_ids WHERE external_id=\"gerrit:#{batch_admin_username}\";")
+      if test.length == 1
+        account_id = test[0]['account_id']
+      else
+        most_recent_account = run_gsql("SELECT s from account_id ORDER BY s DESC LIMIT 1");
+        account_id = next_account_id = most_recent_account[0]['s'].to_i + 10;
+        puts "next account id: #{next_account_id}"
+        run_gsql("INSERT INTO account_id(s) VALUES(#{next_account_id});")
+        run_gsql("INSERT INTO accounts(full_name, account_id, registered_on) VALUES(\"Magic Bot User\", #{next_account_id}, \"#{Time.now.strftime("%Y-%m-%y %H:%M:%S")}\");")
+        run_gsql("INSERT INTO account_external_ids(account_id,external_id) VALUES(\"#{next_account_id}\",\"gerrit:#{batch_admin_username}\");")
+      end
+      # add account into magic admin group
+      test = run_gsql("SELECT * FROM account_group_members WHERE account_id=#{account_id} AND group_id=1;")
+      unless test.length == 1
+        run_gsql("INSERT INTO account_group_members(account_id,group_id) VALUES(#{account_id},1);")
+      end
+      # delete all ssh keys of user and add current public key
+      public_key_content = File.read("#{ssh_key_file}.pub")
+      run_gsql("DELETE FROM account_ssh_keys WHERE account_id=#{account_id};")
+      run_gsql("INSERT INTO account_ssh_keys(ssh_public_key,valid,account_id) VALUES(\"#{public_key_content}\", 1, #{account_id});")
     end
   end
 end
-
-#select_account = Mixlib::ShellOut.new("echo 'SELECT * from accounts;' | java -jar #{war_path} gsql -d #{node['gerrit']['install_dir']}")
-ruby_block "gerrit fetch batch_admin_user" do
-  block do
-    
-  end
-end
-#Chef::Application.fatal!("exit for now")
-#execute "xxxgerrit fetch batch_admin_user" do
-#  user node['gerrit']['user']
-#  group node['gerrit']['group']
-#  cwd "#{node['gerrit']['home']}/war"
-#  command "echo 'SELECT * from accounts;' | java -jar #{war_path} gsql -d #{node['gerrit']['install_dir']}"
-#  action :run
-#  #notifies :restart, "service[gerrit]"
-#end
