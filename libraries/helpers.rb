@@ -31,6 +31,17 @@ module Gerrit
       actual_version_cleaned = node['gerrit']['version'].split('-')[0]
       Chef::VersionConstraint.new(">= #{version}").include?(actual_version_cleaned)
     end
+
+    # Checks if SSH connection succeeeds
+    #
+    # @return [Boolean]
+    def ssh_can_connect?(user, key, host, port)
+      ssh = Mixlib::ShellOut.new("ssh -o StrictHostKeyChecking=no -i #{key} -p #{port} -l #{user} #{host}")
+      ssh.run_command
+      # return true if there was no error
+      ! error?
+    end
+
   end
 end
 
