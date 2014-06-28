@@ -20,6 +20,8 @@
 require 'mixlib/shellout'
 require 'json'
 
+# this recipe creates an admin user for gerrit to be used by bot/cli tasks
+
 batch_admin_username = node['gerrit']['batch_admin_user']['username']
 
 ssh_key_filename = "id_rsa-#{batch_admin_username}"
@@ -28,7 +30,7 @@ ssh_key_file = node['gerrit']['home'] + "/.ssh/" + ssh_key_filename
 war_path = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
   
 execute "generate private ssh key for 'Gerrit Code Review' user" do
-  command "ssh-keygen -t rsa -q -f #{ssh_key_file} -C\"{batch_admin_user}@#{node['gerrit']['hostname']}\""
+  command "ssh-keygen -t rsa -q -f #{ssh_key_file} -C\"#{batch_admin_username}@#{node['gerrit']['hostname']}\""
   user node['gerrit']['user']
   group node['gerrit']['group']
   creates ssh_key_file
