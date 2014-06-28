@@ -36,6 +36,10 @@ if node['gerrit']['peer_keys']['enabled']
   include_recipe "gerrit::peer_keys"
 end
 
+if node['gerrit']['batch_admin_user']['enabled']
+  include_recipe "gerrit::batch_admin"
+end
+
 service "gerrit" do
   supports :status => false, :restart => true, :reload => true
   action [ :enable, :start ]

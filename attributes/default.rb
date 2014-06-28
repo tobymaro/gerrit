@@ -20,6 +20,10 @@ default['gerrit']['proxy']['ssl_certfile'] = nil
 default['gerrit']['proxy']['ssl_keyfile'] = nil
 default['gerrit']['proxy']['ssl_cabundle'] = nil
 
+# add an admin user for batch/cli access to gerrit
+default['gerrit']['batch_admin_user']['enabled'] = false
+default['gerrit']['batch_admin_user']['username'] = "cliadmin"
+
 # These settings will end up in etc/gerrit.config
 default['gerrit']['config']['gerrit']['basePath'] = "git"   # location of git repositories
 default['gerrit']['config']['gerrit']['canonicalWebUrl'] = "http://#{node['gerrit']['hostname']}/"
