@@ -47,17 +47,21 @@ module Gerrit
       cmd = "java -jar #{war_path} gsql --format JSON -c '#{sql}' -d #{node['gerrit']['install_dir']}"
       sql_shell = Mixlib::ShellOut.new(cmd, :user => node['gerrit']['user'], :cwd => "#{node['gerrit']['home']}/war")
       sql_shell.run_command
-      sql_shell.error!
+      if sql_shell.error?
+        msg = "Gerrit::Helpers.run_gsql('#{sql}' execution error"
+        sql_shell.invalid!(msg)
+        #raise msg
+      end
       lines = sql_shell.stdout.split("\n")
       result = Array.new
       # gerrit gsql returns *two* jsons separated by newline in case of success, first line is sufficient for us
       lines.each do |line|
         parsed = JSON.parse(line)
-        if parsed['type'] == 'error'
-          raise "Gerrt::Helpers.run_gsql('#{sql}') failed"
-        elsif parsed['type'] == 'row'
+        if parsed && parsed['type'] == 'error'
+          raise "Gerrt::Helpers.run_gsql('#{sql}') failed #{parsed}"
+        elsif parsed && parsed['type'] == 'row'
           result.push(parsed['columns'])
-        elsif parsed['type'] == 'query-stats'
+        elsif parsed && parsed['type'] == 'query-stats' || parsed['type'] == 'update-stats'
           # ignore query-stats
         else
           msg = "unknown json type attribute in result '#{parsed}'"
