@@ -39,7 +39,7 @@ module Gerrit
       ssh = Mixlib::ShellOut.new("ssh -o StrictHostKeyChecking=no -i #{key} -p #{port} -l #{user} #{host}")
       ssh.run_command
       # return true if there was no error
-      ! error?
+      ! ssh.error?
     end
 
   end
