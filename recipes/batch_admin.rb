@@ -48,7 +48,11 @@ ruby_block "gerrit create batch_admin_user" do
         account_id = test[0]['account_id']
       else
         most_recent_account = run_gsql("SELECT s from account_id ORDER BY s DESC LIMIT 1");
-        account_id = next_account_id = most_recent_account[0]['s'].to_i + 10;
+        if most_recent_account.length == 1
+          account_id = next_account_id = most_recent_account[0]['s'].to_i + 10;
+        else
+          account_id = next_account_id = 1
+        end
         puts "next account id: #{next_account_id}"
         run_gsql("INSERT INTO account_id(s) VALUES(#{next_account_id});")
         run_gsql("INSERT INTO accounts(full_name, account_id, registered_on) VALUES(\"Magic Bot User\", #{next_account_id}, \"#{Time.now.strftime("%Y-%m-%y %H:%M:%S")}\");")
