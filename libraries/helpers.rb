@@ -42,6 +42,31 @@ module Gerrit
       ! ssh.error?
     end
 
+    def run_gsql (sql)
+      war_path = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.war"
+      cmd = "java -jar #{war_path} gsql --format JSON -c '#{sql}' -d #{node['gerrit']['install_dir']}"
+      sql_shell = Mixlib::ShellOut.new(cmd, :user => node['gerrit']['user'], :cwd => "#{node['gerrit']['home']}/war")
+      sql_shell.run_command
+      sql_shell.error!
+      lines = sql_shell.stdout.split("\n")
+      result = Array.new
+      # gerrit gsql returns *two* jsons separated by newline in case of success, first line is sufficient for us
+      lines.each do |line|
+        parsed = JSON.parse(line)
+        if parsed['type'] == 'error'
+          raise "Gerrt::Helpers.run_gsql('#{sql}') failed"
+        elsif parsed['type'] == 'row'
+          result.push(parsed['columns'])
+        elsif parsed['type'] == 'query-stats'
+          # ignore query-stats
+        else
+          msg = "unknown json type attribute in result '#{parsed}'"
+          raise "Gerrit::Helpers.run_gsql('#{sql}') #{msg}"
+        end
+      end
+      return result
+    end
+
   end
 end
 
