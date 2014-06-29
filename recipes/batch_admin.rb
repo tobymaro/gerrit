@@ -43,7 +43,7 @@ ruby_block "gerrit create batch_admin_user" do
     
     unless has_admin then
       # add account
-      test = run_gsql("SELECT * FROM account_external_ids WHERE external_id=\"gerrit:#{batch_admin_username}\";")
+      test = run_gsql("SELECT * FROM account_external_ids WHERE external_id=\"username:#{batch_admin_username}\";")
       if test.length == 1
         account_id = test[0]['account_id']
       else
@@ -56,7 +56,7 @@ ruby_block "gerrit create batch_admin_user" do
         puts "next account id: #{next_account_id}"
         run_gsql("INSERT INTO account_id(s) VALUES(#{next_account_id});")
         run_gsql("INSERT INTO accounts(full_name, account_id, registered_on) VALUES(\"Magic Bot User\", #{next_account_id}, \"#{Time.now.strftime("%Y-%m-%y %H:%M:%S")}\");")
-        run_gsql("INSERT INTO account_external_ids(account_id,external_id) VALUES(\"#{next_account_id}\",\"gerrit:#{batch_admin_username}\");")
+        run_gsql("INSERT INTO account_external_ids(account_id,external_id) VALUES(\"#{next_account_id}\",\"username:#{batch_admin_username}\", 1);")
       end
       # add account into magic admin group
       test = run_gsql("SELECT * FROM account_group_members WHERE account_id=#{account_id} AND group_id=1;")
