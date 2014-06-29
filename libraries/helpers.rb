@@ -36,7 +36,7 @@ module Gerrit
     #
     # @return [Boolean]
     def ssh_can_connect?(user, key, host, port)
-      ssh = Mixlib::ShellOut.new("ssh -o StrictHostKeyChecking=no -i #{key} -p #{port} -l #{user} #{host}")
+      ssh = Mixlib::ShellOut.new("ssh -o StrictHostKeyChecking=no -i #{key} -p #{port} -l #{user} #{host} gerrit version")
       ssh.run_command
       # return true if there was no error
       ! ssh.error?
