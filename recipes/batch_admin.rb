@@ -66,7 +66,7 @@ ruby_block "gerrit create batch_admin_user" do
       # delete all ssh keys of user and add current public key
       public_key_content = File.read("#{ssh_key_file}.pub")
       run_gsql("DELETE FROM account_ssh_keys WHERE account_id=#{account_id};")
-      run_gsql("INSERT INTO account_ssh_keys(ssh_public_key,valid,account_id,seq) VALUES(\"#{public_key_content}\", \"Y\", #{account_id});")
+      run_gsql("INSERT INTO account_ssh_keys(ssh_public_key,valid,account_id,seq) VALUES(\"#{public_key_content}\", \"Y\", #{account_id}, 1);")
     end
   end
 end
