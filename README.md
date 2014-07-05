@@ -1,4 +1,4 @@
-***Note***: This cookbook is still a work in progress!
+***Note***: This cookbook is currently under a major refactoring. Please consider looking at the [refactoring](https://github.com/TYPO3-cookbooks/gerrit/tree/refactoring) branch.
 
 Description
 ===========
