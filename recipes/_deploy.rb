@@ -74,6 +74,7 @@ node['gerrit']['theme']['compile_files'].each do |file|
     owner node['gerrit']['user']
     group node['gerrit']['group']
     mode 0644
+    cookbook node['gerrit']['theme']['source_cookbook']
   end
 end
 
@@ -82,5 +83,6 @@ node['gerrit']['theme']['static_files'].each do |file|
     source "gerrit/static/" + file
     owner node['gerrit']['user']
     group node['gerrit']['group']
+    cookbook node['gerrit']['theme']['source_cookbook']
   end
 end
