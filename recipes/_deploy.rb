@@ -80,7 +80,7 @@ end
 
 node['gerrit']['theme']['static_files'].each do |file|
   cookbook_file node['gerrit']['install_dir'] + "/static/" + file do
-    source "gerrit/static/" + file
+    source "gerrit/static/#{file}"
     owner node['gerrit']['user']
     group node['gerrit']['group']
     cookbook node['gerrit']['theme']['source_cookbook']
