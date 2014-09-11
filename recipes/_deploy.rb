@@ -31,8 +31,8 @@ end
 ##################################
 
 {
-  'http://www.bouncycastle.org/download/bcprov-jdk15on-149.jar' => 'f5155f04330459104b79923274db5060c1057b99',
-  'http://www.bouncycastle.org/download/bcpkix-jdk15on-149.jar' => '924cc7ad2f589630c97b918f044296ebf1bb6855',
+  'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.49/bcprov-jdk15on-1.49.jar' => '96b4b8d46e38',
+  'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.49/bcpkix-jdk15on-1.49.jar' => '45b74b8f8468',
 }.each do |url,checksum|
   lib_filename = Pathname.new(URI.parse(url).path).basename.to_s
   remote_file "#{node['gerrit']['install_dir']}/lib/#{lib_filename}" do
