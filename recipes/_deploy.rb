@@ -31,7 +31,7 @@ end
 ##################################
 
 {
-  'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.49/bcprov-jdk15on-1.49.jar' => '96b4b8d46e38',
+  'http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.49/bcprov-jdk15on-1.49.jar' => '96b4b8d46e38',
   'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.49/bcpkix-jdk15on-1.49.jar' => '45b74b8f8468',
 }.each do |url,checksum|
   lib_filename = Pathname.new(URI.parse(url).path).basename.to_s
