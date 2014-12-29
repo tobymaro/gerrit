@@ -26,7 +26,7 @@ include_recipe "database::mysql"
 # the version can be found in gerrit-pgm/src/main/resources/com/google/gerrit/pgm/libraries.config
 remote_file "#{node['gerrit']['install_dir']}/lib/mysql-connector-java-5.1.21.jar" do
   source "http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar"
-  checksum "7abbd19fc2e2d5b92c0895af8520f7fa30266be9"
+  action :create_if_missing
   owner node['gerrit']['user']
   group node['gerrit']['group']
 end
