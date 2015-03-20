@@ -49,7 +49,7 @@ file node['gerrit']['install_dir'] + "/etc/peer_keys" do
 end
 
 file ssh_key do
-  content = node['gerrit']['peer_keys']['private']
+  content node['gerrit']['peer_keys']['private']
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0600
@@ -57,7 +57,7 @@ file ssh_key do
 end
 
 file ssh_key + ".pub" do
-  content = node['gerrit']['peer_keys']['public']
+  content node['gerrit']['peer_keys']['public']
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0644
