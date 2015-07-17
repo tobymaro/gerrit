@@ -1,4 +1,4 @@
-default['gerrit']['version'] = "2.11.1"
+default['gerrit']['version'] = "2.11.2"
 default['gerrit']['war']['download_url'] = "http://gerrit-releases.storage.googleapis.com/gerrit-#{node['gerrit']['version']}.war"
 
 default['gerrit']['hostname'] = node['fqdn']
