@@ -12,6 +12,8 @@ remote_file war_path do
   source node['gerrit']['war']['download_url']
   # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
   notifies :run, "execute[gerrit-init]", :immediately
+  # important during upgrade
+  notifies :stop, "service[gerrit]", :immediately
   notifies :run, "execute[gerrit-reindex]", :immediately
   action :create_if_missing
 end
@@ -40,6 +42,12 @@ end
     action :create_if_missing
     owner node['gerrit']['user']
     group node['gerrit']['group']
+  end
+end
+
+['bcprov-jdk15on-1.49.jar', 'bcpkix-jdk15on-1.49.jar'].each do |lib_filename|
+  file "#{node['gerrit']['install_dir']}/lib/#{lib_filename}" do
+    action :delete
   end
 end
 
