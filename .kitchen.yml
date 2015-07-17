@@ -16,7 +16,7 @@ provisioner:
           restTokenPrivateKey: 123123123
 
 platforms:
-  - name: debian-7.4
+  - name: debian-7.8
     attributes:
       apt:
         compile_time_update: true
