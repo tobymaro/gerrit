@@ -10,6 +10,10 @@ provisioner:
   attributes:
     apache:
       default_site_enabled: false
+      config:
+        auth:
+          registerEmailPrivateKey: 123123123
+          restTokenPrivateKey: 123123123
 
 platforms:
   - name: debian-7.4
