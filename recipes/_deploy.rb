@@ -31,8 +31,8 @@ end
 ##################################
 
 [
-  'http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.49/bcprov-jdk15on-1.49.jar',
-  'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.49/bcpkix-jdk15on-1.49.jar',
+  'http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.52/bcprov-jdk15on-1.52.jar',
+  'http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.52/bcpkix-jdk15on-1.52.jar',
 ].each do |url,checksum|
   lib_filename = Pathname.new(URI.parse(url).path).basename.to_s
   remote_file "#{node['gerrit']['install_dir']}/lib/#{lib_filename}" do
