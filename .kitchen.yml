@@ -49,8 +49,9 @@ suites:
     excludes: ["ubuntu-12.04", "centos-6.4", "centos-6.5"]
     attributes:
       gerrit:
-        database:
-          type: MYSQL
+        config:
+          database:
+            type: MYSQL
       mysql:
         server_debian_password: "foo"
         server_root_password: "foo"
