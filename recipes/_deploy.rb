@@ -14,6 +14,7 @@ remote_file war_path do
   notifies :run, "execute[gerrit-init]", :immediately
   # important during upgrade
   notifies :stop, "service[gerrit]", :immediately
+  notifies :run, "execute[gerrit-reindex]", :immediately
   action :create_if_missing
 end
 
@@ -61,6 +62,14 @@ execute "gerrit-init" do
   command "java -jar #{war_path} init --batch --no-auto-start -d #{node['gerrit']['install_dir']} #{plugin_command}"
   action :nothing
   notifies :restart, "service[gerrit]"
+end
+
+execute "gerrit-reindex" do
+  user node['gerrit']['user']
+  group node['gerrit']['group']
+  cwd "#{node['gerrit']['home']}/war"
+  command "java -jar #{war_path} reindex -d #{node['gerrit']['install_dir']}"
+  action :nothing
 end
 
 ####################################
