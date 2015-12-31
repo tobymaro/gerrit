@@ -9,7 +9,7 @@ war_path = "#{node['gerrit']['home']}/war/gerrit-#{node['gerrit']['version']}.wa
 
 remote_file war_path do
   owner node['gerrit']['user']
-  source node['gerrit']['war']['download_url']
+  source node['gerrit']['war']['download_url'] % {version: node['gerrit']['version']}
   # checksum node['gerrit']['war']['checksum'][node['gerrit']['version']]
   notifies :run, "execute[gerrit-init]", :immediately
   # important during upgrade
