@@ -14,7 +14,6 @@ remote_file war_path do
   notifies :run, "execute[gerrit-init]", :immediately
   # important during upgrade
   notifies :stop, "service[gerrit]", :immediately
-  notifies :run, "execute[gerrit-reindex]", :immediately
   action :create_if_missing
 end
 
@@ -69,7 +68,8 @@ execute "gerrit-reindex" do
   group node['gerrit']['group']
   cwd "#{node['gerrit']['home']}/war"
   command "java -jar #{war_path} reindex -d #{node['gerrit']['install_dir']}"
-  action :nothing
+# we only have to do initial offline reindexing, if there is no index/ directory already
+  not_if { File.directory?(File.join(node['gerrit']['install_dir'], "index")) }
 end
 
 ####################################
