@@ -25,27 +25,6 @@ platforms:
         compile_time_update: true
     run_list:
       - recipe[apt::default]
-  - name: debian-8.2
-    attributes:
-      apt:
-        compile_time_update: true
-    run_list:
-      - recipe[apt::default]
-  - name: ubuntu-12.04
-    attributes:
-      apt:
-        compile_time_update: true
-    run_list:
-      - recipe[apt::default]
-#  - name: ubuntu-13.10
-#    # AH00526: Syntax error on line 11 of /etc/apache2/apache2.conf:
-#    # Invalid command 'LockFile', perhaps misspelled or defined by a module not included in the server configuration
-#    # Action 'configtest' failed.
-#    run_list:
-#    - recipe[apt::default]
-#  - name: centos-6.4
-#  - name: centos-6.5
-
 
 suites:
   - name: DB-H2
@@ -55,7 +34,6 @@ suites:
   - name: DB-MYSQL
     run_list:
       - recipe[gerrit::default]
-    excludes: ["ubuntu-12.04", "centos-6.4", "centos-6.5"]
     attributes:
       gerrit:
         config:
@@ -68,10 +46,6 @@ suites:
   - name: DB-POSTGRESQL
     run_list:
       - recipe[gerrit::default]
-    excludes:
-      - centos-6.4 # fails with: "Undefined method or attribute `action' on `node'" in build-essentials
-      - centos-6.5 # fails with: "Undefined method or attribute `action' on `node'" in build-essentials
-      - ubuntu-12.04 # works only at the 2nd "kitchen converge" try.. some apt-get update issue
     attributes:
       gerrit:
         database:
