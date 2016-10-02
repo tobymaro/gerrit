@@ -25,6 +25,12 @@ platforms:
         compile_time_update: true
     run_list:
       - recipe[apt::default]
+  - name: debian-8.5
+    attributes:
+      apt:
+        compile_time_update: true
+    run_list:
+      - recipe[apt::default]
 
 suites:
   - name: DB-H2
