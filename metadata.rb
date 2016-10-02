@@ -4,7 +4,7 @@ maintainer_email "steffen.gebert@typo3.org"
 license          "Apache 2.0"
 description      "Installs/Configures gerrit"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.6.0"
+version          "0.6.1"
 
 depends "apache2"
 depends "build-essential"
