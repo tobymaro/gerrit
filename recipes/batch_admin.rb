@@ -69,4 +69,5 @@ ruby_block "gerrit create batch_admin_user" do
       run_gsql("INSERT INTO account_ssh_keys(ssh_public_key,valid,account_id,seq) VALUES(\"#{public_key_content}\", \"Y\", #{account_id}, 1);")
     end
   end
+  only_if do node['gerrit']['version'].to_f < 2.13 end
 end
