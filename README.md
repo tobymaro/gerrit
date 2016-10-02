@@ -5,6 +5,12 @@ Description
 
 Installs the [Gerrit](http://code.google.com/p/gerrit/) review system. Optional support for MySQL database and Apache2 as proxy server is included.
 
+Maintenance Status
+==================
+
+Sorry for pushing this cookbook to the Chef Supermarket. This cookbook is only maintained for internal (TYPO3) purposes due to time constraints.
+
+
 Requirements
 ============
 
