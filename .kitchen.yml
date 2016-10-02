@@ -1,6 +1,11 @@
 ---
 driver:
   name: vagrant
+  network:
+  - ["forwarded_port", {guest: 80, host: 8080, auto_correct: true}]
+
+verifier:
+  name: inspec
 
 provisioner:
   name: chef_zero
@@ -8,41 +13,32 @@ provisioner:
   attributes:
     apache:
       default_site_enabled: false
+      config:
+        auth:
+          registerEmailPrivateKey: 123123123
+          restTokenPrivateKey: 123123123
 
 platforms:
-  - name: centos-6.4
-  - name: centos-6.5
-  - name: debian-7.4
+  - name: debian-7.8
+    attributes:
+      apt:
+        compile_time_update: true
     run_list:
-    - recipe[apt::default]
-  - name: ubuntu-12.04
-    run_list:
-    - recipe[apt::default]
-
-#  - name: ubuntu-13.10
-#    # AH00526: Syntax error on line 11 of /etc/apache2/apache2.conf:
-#    # Invalid command 'LockFile', perhaps misspelled or defined by a module not included in the server configuration
-#    # Action 'configtest' failed.
-#    run_list:
-#    - recipe[apt::default]
+      - recipe[apt::default]
 
 suites:
   - name: DB-H2
     run_list:
       - recipe[gerrit::default]
     excludes: ["ubuntu-13.10"]
-    attributes:
-      gerrit:
-        database:
-          type: "H2"
   - name: DB-MYSQL
     run_list:
       - recipe[gerrit::default]
-    excludes: ["ubuntu-12.04", "centos-6.4", "centos-6.5"]
     attributes:
       gerrit:
-        database:
-          type: MYSQL
+        config:
+          database:
+            type: MYSQL
       mysql:
         server_debian_password: "foo"
         server_root_password: "foo"
@@ -50,10 +46,6 @@ suites:
   - name: DB-POSTGRESQL
     run_list:
       - recipe[gerrit::default]
-    excludes:
-      - centos-6.4 # fails with: "Undefined method or attribute `action' on `node'" in build-essentials
-      - centos-6.5 # fails with: "Undefined method or attribute `action' on `node'" in build-essentials
-      - ubuntu-12.04 # works only at the 2nd "kitchen converge" try.. some apt-get update issue
     attributes:
       gerrit:
         database:
@@ -61,19 +53,10 @@ suites:
       postgresql:
         password:
           postgres: "foo"
-  - name: VERSION-2.9
-    run_list:
-      - recipe[gerrit::default]
-    attributes:
-      gerrit:
-        version: 2.9-rc1
-        database:
-          type: "H2"
   - name: PROXY-NONE
     run_list:
       - recipe[gerrit::default]
     attributes:
       gerrit:
-        database:
-          type: H2
-        proxy: false
+        proxy:
+          enable: false

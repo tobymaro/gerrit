@@ -4,15 +4,10 @@ maintainer_email "steffen.gebert@typo3.org"
 license          "Apache 2.0"
 description      "Installs/Configures gerrit"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.3.2"
+version          "0.5.0"
 
-%w{ build-essential database mysql postgresql java git maven apache2 cron }.each do |cookbook|
-  depends cookbook
-end
-
-recipe "gerrit::default", "Installs and configures Gerrit. Includes other recipes, if needed"
-recipe "gerrit::mysql", "Installs MySQL server and configures Gerrit to use MySQL"
-recipe "gerrit::proxy", "Installs Apache2 as reverse proxy in front of Gerrit"
-recipe "gerrit::source", "Checks out Gerrit source code from Git and builds it using maven."
-
-supports "debian"
+depends "apache2", "~> 3.1.0"
+depends "database", "= 1.3.12"
+depends "mysql", "= 1.3.0"
+depends "java", "~> 1.31.0"
+depends "git", "~> 4.2.2"

@@ -22,9 +22,11 @@ include_recipe "mysql::client"
 include_recipe "mysql::server"
 include_recipe "database::mysql"
 
-remote_file "#{node['gerrit']['install_dir']}/lib/mysql-connector-java-5.1.10.jar" do
-  source "http://repo2.maven.org/maven2/mysql/mysql-connector-java/5.1.10/mysql-connector-java-5.1.10.jar"
-  checksum "cf194019de3e54b3a9b9980462"
+# TODO delete other occurrences of this file
+# the version can be found in gerrit-pgm/src/main/resources/com/google/gerrit/pgm/libraries.config
+remote_file "#{node['gerrit']['install_dir']}/lib/mysql-connector-java-5.1.21.jar" do
+  source "http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar"
+  action :create_if_missing
   owner node['gerrit']['user']
   group node['gerrit']['group']
 end
@@ -35,27 +37,23 @@ mysql_connection_info = {
   :password => node['mysql']['server_root_password']
 }
 
-mysql_database node['gerrit']['database']['name'] do
+mysql_database node['gerrit']['config']['database']['database'] do
   connection mysql_connection_info
   action :create
 end
 
 mysql_database "changing the charset of database" do
   connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
+  database_name node['gerrit']['config']['database']['database']
   action :query
-  sql "ALTER DATABASE #{node['gerrit']['database']['name']} charset=latin1"
+  sql "ALTER DATABASE #{node['gerrit']['config']['database']['database']} charset=latin1"
 end
 
-mysql_database_user node['gerrit']['database']['username'] do
+mysql_database_user node['gerrit']['config']['database']['username'] do
+  username node['gerrit']['config']['database']['username']
   connection mysql_connection_info
-  password node['gerrit']['database']['password']
-  action :create
-end
-
-mysql_database_user node['gerrit']['database']['username'] do
-  connection mysql_connection_info
-  database_name node['gerrit']['database']['name']
+  database_name node['gerrit']['config']['database']['database']
+  password node['gerrit']['config']['database']['password']
   privileges [
     :all
   ]

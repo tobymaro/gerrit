@@ -26,19 +26,12 @@ apache_site "default" do
   enable false
 end
 
-if node['gerrit']['ssl']
+if node['gerrit']['proxy']['ssl']
   include_recipe "apache2::mod_ssl"
 
-  ssl_certfile_path = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-  ssl_keyfile_path  = "/etc/ssl/private/ssl-cert-snakeoil.key"
-
-  # don't use snakeoil CA, if specified otherwise
-  if node['gerrit']['ssl_certificate']
-    ssl_certificate node['gerrit']['ssl_certificate']
-    ssl_certfile_path = node['ssl_certificates']['path'] + "/" + node['gerrit']['ssl_certificate'] + ".crt"
-    ssl_keyfile_path  = node['ssl_certificates']['path'] + "/" + node['gerrit']['ssl_certificate'] + ".key"
-    ssl_cabundle_path = node['ssl_certificates']['path'] + "/" + node['gerrit']['ssl_certificate'] + ".ca-bundle"
-  end
+  ssl_certfile_path = node['gerrit']['proxy']['ssl_certfile'] || "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  ssl_keyfile_path  = node['gerrit']['proxy']['ssl_keyfile'] || "/etc/ssl/private/ssl-cert-snakeoil.key"
+  ssl_cabundle_path = node['gerrit']['proxy']['ssl_cabundle'] || nil
 end
 
 web_app node['gerrit']['hostname'] do
@@ -46,10 +39,14 @@ web_app node['gerrit']['hostname'] do
   server_aliases []
   docroot "/var/www"
   template "apache/web_app.conf.erb"
-  if node['gerrit']['ssl']
+  if node['gerrit']['proxy']['ssl']
     ssl_certfile         ssl_certfile_path
     ssl_keyfile          ssl_keyfile_path
-    ssl_cabundle_used    ::File::exist?(ssl_cabundle_path)
     ssl_cabundle         ssl_cabundle_path
   end
 end
+
+##################
+# httpd.listenUrl
+##################
+node.set['gerrit']['config']['httpd']['listenUrl'] = node['gerrit']['proxy']['ssl'] ? "proxy-https://127.0.0.1:8080/" : "proxy-http://127.0.0.1:8080/"

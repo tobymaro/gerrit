@@ -18,6 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+# @todo: check wether this recipe might is obsolete?
+# the recipe batch_admin.rb creates an ssh-key plus a user for gerrit that has admin privileges
+# is this key/recipe still needed?
+
 ssh_key_filename = "id_rsa-gerrit-code-review"
 ssh_key = node['gerrit']['home'] + "/.ssh/" + ssh_key_filename
 public_key = node['gerrit']['peer_keys']['public']
@@ -49,7 +53,7 @@ file node['gerrit']['install_dir'] + "/etc/peer_keys" do
 end
 
 file ssh_key do
-  content = node['gerrit']['peer_keys']['private']
+  content node['gerrit']['peer_keys']['private']
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0600
@@ -57,7 +61,7 @@ file ssh_key do
 end
 
 file ssh_key + ".pub" do
-  content = node['gerrit']['peer_keys']['public']
+  content node['gerrit']['peer_keys']['public']
   owner node['gerrit']['user']
   group node['gerrit']['group']
   mode 0644

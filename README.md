@@ -22,7 +22,6 @@ Requirements
 * git
 * maven
 * apache2
-* [ssl_certificates](http://github.com/typo3-cookbooks/ssl_certificates)
 * Optional: [git-daemon](http://github.com/typo3-cookbooks/git-daemon)
 
 Attributes
@@ -33,10 +32,8 @@ These attributes are set by the cookbook by default.
 Deployment
 ----------
 
-* `node['gerrit']['flavor']` - Installation type, either `war` or `source`. `war` downloads the `.war` file from `download_url`. `source` checks out the git repository `repository` and builds it using Maven. Please note that the `source` flavor is absolutely *not* recommended for production use. Building Gerrit will cause severe load on your server!
 * `node['gerrit']['version']` - Gerrit version to deploy.
 * `node['gerrit']['download_url']` - URL to download the `.war` file from. Defaults to `http://gerrit.googlecode.com/files/gerrit-#{node['gerrit']['version']}.war`
-* `node['gerrit']['repository']` - Git repository containing the Gerrit source code. Defaults to `https://gerrit.googlesource.com/gerrit`.
 * `node['gerrit']['reference']` - Git revision or branch name to checkout.
 
 User and path setup
@@ -54,9 +51,11 @@ HTTP and friends
 * `node['gerrit']['canonicalWebUrl']` - The default URL for Gerrit to be accessed through. Typically this would be set to "http://review.example.com/" or "http://example.com/gerrit/" so Gerrit can output links that point back to itself. ([gerrit.canonicalWebUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#gerrit.canonicalWebUrl)). Defaults to `http://#{node['fqdn']}/`.
 connections on ([sshd.listenAddress](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#sshd.listenAddress)).
 * `node['gerrit']['canonicalGitUrl']` - The URL under which the repositories are available through the Git protocol ([gerrit.canonicalGitUrl](http://gerrit-documentation.googlecode.com/svn/Documentation/2.5/config-gerrit.html#gerrit.canonicalGitUrl)). Has to include the protocol (`git://`). As Gerrit does _not_ support the Git protocol, such a server has to be managed through another cookbook, e.g. [git-daemon](http://github.com/typo3-cookbooks/git-daemon).
-* `node['gerrit']['proxy']` - Enable Apache2 reverse proxy in front of Gerrit. Defaults to `true`, which makes Gerrit available on port 80.
-* `node['gerrit']['ssl']` - Enable SSL for the reverse proxy. Defaults to `false`.
-* `node['gerrit']['ssl_certificate']`- Makes use of the [ssl_certificates](http://github.com/typo3-cookbooks/ssl_certificates), to use a certain SSL certificate. An entry in the `ssl_certificates` data bag matching the given name must exist. Defaults to `nil`, which results in snakeoil certificates being used.
+* `node['gerrit']['proxy']['enable']` - Enable Apache2 reverse proxy in front of Gerrit. Defaults to `true`, which makes Gerrit available on port 80.
+* `node['gerrit']['proxy']['ssl']` - Enable SSL for the reverse proxy. Defaults to `true` and uses snakeoile self-signed certificate
+* `node['gerrit']['proxy']['ssl_certfile']` - set path to a custom ssl_certfile.
+* `node['gerrit']['proxy']['ssl_keyfile']` - set path to a custom ssl_keyfile.
+* `node['gerrit']['proxy']['ssl_cabundle']` - set path to a custom ssl_bundle.
 
 SSHD
 ----
