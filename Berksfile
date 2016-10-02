@@ -1,6 +1,3 @@
-source "https://api.berkshelf.com"
+source "https://supermarket.chef.io"
 
 metadata
-
-cookbook 'postgresql', '~> 3.3'
-cookbook 'chef-sugar'
