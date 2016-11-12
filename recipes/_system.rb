@@ -47,4 +47,27 @@ end
 
 link "/etc/init.d/gerrit" do
   to "#{node['gerrit']['install_dir']}/bin/gerrit.sh"
+  not_if { ::File.open('/proc/1/comm').gets.chomp == 'systemd' } # systemd
+end
+
+systemd_service 'gerrit' do
+  description 'Web based code review and project management for Git based projects'
+  after %w( network.target )
+  install do
+    wanted_by 'multi-user.target'
+  end
+  service do
+    type 'simple'
+    user 'gerrit'
+    environment_file '/etc/default/gerritcodereview'
+    standard_output 'syslog'
+    standard_error 'syslog'
+    syslog_identifier 'gerrit'
+    exec_start '@/usr/bin/java gerrit -DGerritCodeReview=1 $JAVA_OPTIONS -jar $GERRIT_JAR daemon -d $GERRIT_SITE --console-log'
+    exec_stop '/bin/kill -s SIGINT $MAINPID'
+    # stupid java exit codes
+    success_exit_status '130 143 SIGINT SIGTERM'
+
+  end
+  only_if { ::File.open('/proc/1/comm').gets.chomp == 'systemd' } # systemd
 end
