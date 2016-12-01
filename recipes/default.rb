@@ -20,6 +20,8 @@
 
 include_recipe "git"
 include_recipe "java"
+# used later on to restart after JRE update
+include_recipe "java::notify"
 
 include_recipe "gerrit::_system"
 include_recipe "gerrit::_config"
@@ -42,5 +44,6 @@ end
 
 service "gerrit" do
   supports :status => false, :restart => true, :reload => true
+  subscribes :restart, 'log[jdk-version-changed]', :delayed
   action [ :enable, :start ]
 end
