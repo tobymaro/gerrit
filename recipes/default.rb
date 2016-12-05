@@ -47,3 +47,10 @@ service "gerrit" do
   subscribes :restart, 'log[jdk-version-changed]', :delayed
   action [ :enable, :start ]
 end
+
+
+ruby_block "wait_until_ready" do
+  block do
+    wait_until_ready!
+  end
+end

@@ -17,9 +17,20 @@
 # limitations under the License.
 #
 
+require 'timeout'
 
 module Gerrit
   module Helpers
+
+    class ConnectTimeout < Timeout::Error; end
+
+    class ServiceNotReady < StandardError
+      def initialize(endpoint, timeout)
+        super "The service at '#{endpoint}' did not become ready within #{timeout} seconds."
+      end
+    end
+
+
 
     # Checks against the current gerrit version
     #
@@ -69,6 +80,32 @@ module Gerrit
         end
       end
       return result
+    end
+
+    def wait_until_ready!
+      timeout = 60
+      endpoint = node['gerrit']['config']['httpd']['listenUrl'].sub('proxy-', '').sub('*', 'localhost')
+      Timeout.timeout(timeout, ConnectTimeout) do
+        begin
+          open(endpoint)
+        rescue SocketError,
+          Errno::ECONNREFUSED,
+          Errno::ECONNRESET,
+          Errno::ENETUNREACH,
+          Timeout::Error,
+          OpenURI::HTTPError => e
+          # If authentication has been enabled, the server will return an HTTP
+          # 403. This is "OK", since it means that the server is actually
+          # ready to accept requests.
+          return if e.message =~ /^403/
+
+          Chef::Log.debug("Gerrit is not accepting requests - #{e.message}")
+          sleep(0.5)
+          retry
+        end
+      end
+    rescue ConnectTimeout
+      raise ServiceNotReady.new(endpoint, timeout)
     end
 
   end
