@@ -42,9 +42,15 @@ if node['gerrit']['batch_admin_user']['enabled']
   include_recipe "gerrit::batch_admin"
 end
 
-service "gerrit" do
+# we have to split up the service because of the immediate notification
+service "gerrit-definition" do
+  service_name "gerrit"
   supports :status => false, :restart => true, :reload => true
-  action [ :enable, :start ]
+  action :enable
+end
+
+service "gerrit" do
+  action :start
   subscribes :restart, 'log[jdk-version-changed]', :delayed
   # proceed only after finished restart
   notifies :run, 'ruby_block[wait_until_ready]', :immediately
