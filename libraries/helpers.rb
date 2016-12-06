@@ -84,7 +84,8 @@ module Gerrit
 
     def wait_until_ready!
       timeout = 60
-      endpoint = node['gerrit']['config']['httpd']['listenUrl'].sub('proxy-', '').sub('*', 'localhost')
+      # the listen URL can be something like proxy-https://*:8080 or https://example.com:443 or proxy-http://127.0.0.1:8080 etc.
+      endpoint = node['gerrit']['config']['httpd']['listenUrl'].sub('proxy-https', 'http').sub('proxy-http', 'http').sub('*', 'localhost')
       Timeout.timeout(timeout, ConnectTimeout) do
         begin
           open(endpoint)
