@@ -44,10 +44,11 @@ end
 
 service "gerrit" do
   supports :status => false, :restart => true, :reload => true
-  subscribes :restart, 'log[jdk-version-changed]', :delayed
   action [ :enable, :start ]
+  subscribes :restart, 'log[jdk-version-changed]', :delayed
+  # proceed only after finished restart
+  notifies :run, 'ruby_block[wait_until_ready]', :immediately
 end
-
 
 ruby_block "wait_until_ready" do
   block do
